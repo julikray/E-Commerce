@@ -1,30 +1,45 @@
-import MainLayout from "../../layout/MainLayout.jsx"
-import { privateRoutes } from "./privateRoutes.jsx"
+// import MainLayout from "../../layout/MainLayout.jsx"
+// import { privateRoutes } from "./privateRoutes.jsx"
+// import ProtectRoute from "./ProtectRoute.jsx"
 
 
-export const getRoutes = () =>[
-    {
-        path:'/',
-        element : <MainLayout />,
+// export const getRoutes = () =>{
+
+//     privateRoutes.map(r => {
+//         r.element = <ProtectRoute route={r} >{r.element} </ProtectRoute>
+//     })
+
+
+
+//     return {
+//         path:'/',
+//         element : <MainLayout />,
        
-        children : privateRoutes,
-    }
-]
+//         children : privateRoutes,
+//     }
+// }
 
 
 
-// import { Suspense } from "react";
-// import MainLayout from "../../layout/MainLayout.jsx";
-// import { privateRoutes } from "./privateRoutes.js";
+import MainLayout from "../../layout/MainLayout.jsx";
+import { privateRoutes } from "./privateRoutes.jsx";
+import ProtectRoute from "./ProtectRoute.jsx";
 
-// export const getRoutes = () => [
-//   {
-//     path: '/',
-//     element: (
-//       <Suspense fallback={<div>Loading...</div>}>
-//         <MainLayout />
-//       </Suspense>
-//     ),
-//     children: privateRoutes,
-//   }
-// ];
+export const getRoutes = () => {
+    
+    privateRoutes.map(r => {
+        r.element = <ProtectRoute route={r}>{r.element}</ProtectRoute>;
+        return r;  
+    });
+
+     
+    return [
+        {
+            path: '/',
+            element: <MainLayout />,
+            children: privateRoutes, 
+        }
+    ];
+};
+
+

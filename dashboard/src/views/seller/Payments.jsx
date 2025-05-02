@@ -20,7 +20,7 @@ function Payments() {
                 <div className="w-[25%] p-2 whitespace-nowrap " >{index + 1} </div>
                 <div className="w-[25%] p-2 whitespace-nowrap " >Rs 2222</div>
                 <div className="w-[25%] p-2 whitespace-nowrap " >
-                <span className="px-2 py-1 text-xs text-green-500 font-bold bg-green-100 rounded-md " >Pending</span>
+                <span className="px-2 py-1 text-xs  text-red-500 font-bold bg-red-100 rounded-md " >Pending</span>
                 </div>
                 <div className="w-[25%] p-2 whitespace-nowrap " >25 Dec 2025 </div>
              

@@ -66,13 +66,13 @@ function Orders() {
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap"
                       >
-                       Pending
+                       <span className="px-2 py-1 text-xs  text-red-500 font-bold bg-red-100 rounded-md " >Pending</span>
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap"
                       >
-                        Pending
+                       <span className="px-2 py-1 text-xs  text-red-500 font-bold bg-red-100 rounded-md " >Pending</span>
                       </td>
                      
                       <td
@@ -81,7 +81,7 @@ function Orders() {
                       >
                         <div className="flex justify-start items-center gap-4 ">
                          
-                          <Link className="p-[6px]  bg-green-500  rounded hover:shadow-lg hover text-[#6f6f70] ">
+                          <Link to={`/seller/dashboard/order/details/34`} className="p-[6px]  bg-green-500  rounded hover:shadow-lg hover text-[#6f6f70] ">
                             <FaEye />
                           </Link>
                           

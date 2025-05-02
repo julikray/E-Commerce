@@ -51,9 +51,9 @@ function AdminLogin() {
   },[errorMessage , successMessage])
 
   return (
-    <div className="min-w-screen min-h-screen bg-[#cdcae9] flex justify-center items-center ">
-      <div className="w-[350px] text-[#ffffff] p-2">
-        <div className="bg-[#6f68d1] p-4 rounded-md">
+    <div className="min-w-screen min-h-screen bg-[#eeefee] flex justify-center items-center ">
+      <div className="w-[350px] text-[#6f6f70] p-2">
+        <div className="bg-[#fefeff] border border-[#d2d3d2] p-4 rounded-md shadow-sm ">
           <h2 className="text-xl mb-3 font-bold text-center ">Welcome to E-commerce</h2>
           <p className="text-sm mb-3 font-medium text-center">Please Admin Sign In your account</p>
 
@@ -86,7 +86,7 @@ function AdminLogin() {
               />
             </div>
 
-            <button disabled={loader ? true : false } className="bg-slate-800 w-full text-white rounded-md px-7 py-2 mb-3 cursor-pointer">
+            <button disabled={loader ? true : false } className="bg-[#836bca] w-full text-white rounded-md px-7 py-2 mb-3 cursor-pointer">
                {
                 loader ? <PropagateLoader color='#fff' cssOverride={overrideStyle} /> : "Login"
                }

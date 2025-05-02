@@ -1,35 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaImage } from "react-icons/fa";
 import { IoMdCloseCircle } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { getCategory } from "../../store/Reducers/categoryReducer.js";
+import { addProduct , messageClear } from "../../store/Reducers/productReducer.js";
+import { PropagateLoader } from "react-spinners";
+import toast from 'react-hot-toast';
 
 function AddProduct() {
-  const categorys = [
-    {
-      id: 1,
-      name: "Sports",
-    },
-    {
-      id: 2,
-      name: "Tshirt",
-    },
-    {
-      id: 3,
-      name: "Mobile",
-    },
-    {
-      id: 4,
-      name: "Computer",
-    },
-    {
-      id: 5,
-      name: "Watch",
-    },
-    {
-      id: 6,
-      name: "Pant",
-    },
-  ];
+  const dispatch = useDispatch();
+
+  const { categorys } = useSelector((state) => state.category);
+
+  const { loader, errorMessage, successMessage } = useSelector(
+    (state) => state.product
+  );
+
+  useEffect(() => {
+    dispatch(
+      getCategory({
+        searchValue: "",
+        parPage: "",
+        page: "",
+      })
+    );
+  }, []);
 
   const [state, setState] = useState({
     name: "",
@@ -49,7 +45,7 @@ function AddProduct() {
 
   const [cateShow, setCateShow] = useState(false);
   const [category, setCategory] = useState("");
-  const [allCategory, setAllCategorry] = useState(categorys);
+  const [allCategory, setAllCategorry] = useState([]);
   const [searchValue, setSearchValue] = useState("");
 
   const categorySearch = (e) => {
@@ -104,6 +100,63 @@ function AddProduct() {
     setImageShow(filterImageUrl);
   };
 
+  const add = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("name", state.name);
+    formData.append("description", state.description);
+    formData.append("discount", state.discount);
+    formData.append("price", state.price);
+    formData.append("brand", state.brand);
+    formData.append("stock", state.stock);
+    formData.append("shopName", "EShop");
+    formData.append("category", category);
+
+    for (let i = 0; i < images.length; i++) {
+      formData.append("images", images[i]);
+    }
+
+    dispatch(addProduct(formData));
+  };
+
+  useEffect(() => {
+    setAllCategorry(categorys);
+  }, [categorys]);
+
+  const overrideStyle = {
+    display: "flex",
+    margin: "0 auto",
+    height: "24px",
+    justifyContent: "center",
+    alignItem: "center",
+  };
+
+
+  useEffect(()=>{
+    if(successMessage){
+      toast.success(successMessage)
+      dispatch(messageClear())
+      setState({
+        name: "",
+    description: "",
+    discount: "",
+    price: "",
+    brand: "",
+    stock: "",
+      })  
+      setImages([])
+      setImageShow([])
+      setCategory('')
+    }
+      if(errorMessage){
+        toast.error(errorMessage)
+        dispatch(messageClear())
+      }
+    },[errorMessage , successMessage])
+
+
+
   return (
     <div className="px-2 lg:px-7 pt-5">
       <div className="w-full p-4 bg-[#fefeff] rounded-md border border-[#d2d3d2] ">
@@ -119,7 +172,7 @@ function AddProduct() {
         </div>
 
         <div>
-          <form>
+          <form onSubmit={add}>
             <div className="flex flex-col mb-3 md:flex-row gap-4 w-full text-[#6f6f70] ">
               <div className="flex flex-col w-full gap-1">
                 <label htmlFor="name">Product Name</label>
@@ -203,9 +256,9 @@ function AddProduct() {
                   className="px-4 py-2 focus:border-indigo-500 outline-none bg-[#eeefee] border border-slate-700 rounded-md text-[#6f6f70] "
                   onChange={inputHandle}
                   value={state.stock}
-                  type="text"
-                  name=" stock"
-                  id=" stock"
+                  type="number"
+                  name="stock"
+                  id="stock"
                   placeholder="Stock"
                 />
               </div>
@@ -297,8 +350,15 @@ function AddProduct() {
             </div>
 
             <div>
-              <button className="bg-red-500 w-full hover:shadow-red-500/40 hover:shadow-md text-white rounded-md px-7 py-2 ">
-                Add Product
+              <button
+                disabled={loader ? true : false}
+                className="bg-red-500 w-full hover:shadow-red-300/50  text-white rounded-md px-7 py-2 mb-3 cursor-pointer"
+              >
+                {loader ? (
+                  <PropagateLoader color="#fff" cssOverride={overrideStyle} />
+                ) : (
+                  "Add Product"
+                )}
               </button>
             </div>
           </form>

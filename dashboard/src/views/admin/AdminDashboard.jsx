@@ -177,7 +177,7 @@ function AdminDashboard() {
                     />
                   </div>
 
-                  <div className="p-3 bg-[] rounded-lg border border-[#cfcfcf] shadow-sm ">
+                  <div className="p-3 rounded-lg border border-[#cfcfcf] shadow-sm ">
                     <div className="flex justify-between items-center mb-2 ">
                       <Link className="text-md font-normal  ">Admin</Link>
                       <time className="md-1 text-sm font-normal sm:order-last sm:md-0   ">
@@ -253,7 +253,7 @@ function AdminDashboard() {
 
         </div>
 
-        <div className="relative overflow-x-autoauto " >
+        <div className="relative overflow-x-auto" >
           <table className="w-full text-sm text-left text-[#6f6f70]  " >
             <thead className="text-sm text-[#6f6f70] uppercase border-b border-slate-700 " >
             <tr>

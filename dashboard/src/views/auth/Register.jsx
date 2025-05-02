@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaGoogle } from 'react-icons/fa';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { PropagateLoader } from 'react-spinners'
+import { seller_register , messageClear  } from '../../store/Reducers/authReducer';
+import toast from 'react-hot-toast';
+ 
 function Register() {
+
+  const navigate = useNavigate()
+
+  const dispatch = useDispatch()
+
+  const { loader , errorMessage ,successMessage } = useSelector(state=>state.auth)
+
   const [state, setState] = useState({
     name: "",
     email: "",
@@ -18,13 +29,37 @@ function Register() {
 
   const submit = (e) => {
     e.preventDefault(); 
-    console.log(state);
+    // console.log(state);
+    dispatch(seller_register(state))
   };
 
+  const overrideStyle ={
+    display : 'flex',
+    margin: '0 auto',
+    height : '24px',
+    justifyContent : 'center',
+    alignItem : 'center',
+    
+  }
+
+  useEffect(()=>{
+    if(successMessage){
+      toast.success(successMessage)
+      dispatch(messageClear())
+      navigate('/')
+       
+    }
+      if(errorMessage){
+        toast.error(errorMessage)
+        dispatch(messageClear())
+      }
+    },[errorMessage , successMessage])
+
+
   return (
-    <div className="min-w-screen min-h-screen bg-[#cdcae9] flex justify-center items-center">
-      <div className="w-[350px] text-[#ffffff] p-2">
-        <div className="bg-[#6f68d1] p-4 rounded-md">
+    <div className="min-w-screen min-h-screen bg-[#eeefee] flex justify-center items-center  ">
+      <div className="w-[350px] text-[#6f6f70]  p-2">
+        <div className="bg-[#fefeff] border border-[#d2d3d2] p-4 rounded-md shadow-sm ">
           <h2 className="text-xl mb-3 font-bold">Welcome to E-commerce</h2>
           <p className="text-sm mb-3 font-medium">Please Register your account</p>
 
@@ -81,8 +116,10 @@ function Register() {
               <label htmlFor="checkbox">I agree to privacy policy & terms</label>
             </div>
 
-            <button className="bg-slate-800 w-full text-white rounded-md px-7 py-2 mb-3 cursor-pointer">
-              Sign Up
+            <button disabled={loader ? true : false } className="bg-[#836bca] w-full text-white rounded-md px-7 py-2 mb-3 cursor-pointer">
+               {
+                 loader ? <PropagateLoader color='#fff' cssOverride={overrideStyle} /> : "Sign Up"
+               }
             </button>
 
             <div className="flex items-center mb-3 gap-3 justify-center">
@@ -92,15 +129,15 @@ function Register() {
             </div>
 
             <div className="w-full flex justify-center items-center my-3">
-              <div className="w-[45%] bg-slate-700 h-[1px]"></div>
+              <div className="w-[45%] bg-[#836bca]  h-[1px]"></div>
               <div className="w-[10%] flex justify-center items-center">
                 <span className="pb-1">Or</span>
               </div>
-              <div className="w-[45%] bg-slate-700 h-[1px]"></div>
+              <div className="w-[45%] bg-[#836bca]  h-[1px]"></div>
             </div>
 
             <div className="flex justify-center items-center gap-3">
-              <div className="w-full h-[35px] flex rounded-md bg-orange-700 shadow-lg justify-center cursor-pointer items-center">
+              <div className="w-full h-[35px] text-white flex rounded-md bg-red-500  shadow-lg justify-center cursor-pointer items-center">
                 <span><FaGoogle /></span>
               </div>
             </div>

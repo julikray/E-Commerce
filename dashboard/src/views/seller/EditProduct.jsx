@@ -1,35 +1,61 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { FaImage } from "react-icons/fa";
-import { IoMdCloseCircle } from "react-icons/io";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getCategory } from "../../store/Reducers/categoryReducer";
+import { editGetProduct, messageClear, update_product ,product_image_update  } from "../../store/Reducers/productReducer";
+import { PropagateLoader } from "react-spinners";
+import toast from "react-hot-toast";
 
 function EditProduct() {
-  const categorys = [
-    {
-      id: 1,
-      name: "Sports",
-    },
-    {
-      id: 2,
-      name: "Tshirt",
-    },
-    {
-      id: 3,
-      name: "Mobile",
-    },
-    {
-      id: 4,
-      name: "Computer",
-    },
-    {
-      id: 5,
-      name: "Watch",
-    },
-    {
-      id: 6,
-      name: "Pant",
-    },
-  ];
+  const { productId } = useParams();
+
+  const dispatch = useDispatch();
+
+  const { categorys } = useSelector((state) => state.category);
+  const { loader, errorMessage, successMessage, product } = useSelector(
+    (state) => state.product
+  );
+
+  useEffect(() => {
+    dispatch(
+      getCategory({
+        searchValue: "",
+        parPage: "",
+        page: "",
+      })
+    );
+  }, []);
+
+  useEffect(() => {
+    dispatch(editGetProduct(productId));
+  }, [productId]);
+
+  // const categorys = [
+  //   {
+  //     id: 1,
+  //     name: "Sports",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Tshirt",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Mobile",
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Computer",
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "Watch",
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "Pant",
+  //   },
+  // ];
 
   const [state, setState] = useState({
     name: "",
@@ -49,7 +75,7 @@ function EditProduct() {
 
   const [cateShow, setCateShow] = useState(false);
   const [category, setCategory] = useState("");
-  const [allCategory, setAllCategorry] = useState(categorys);
+  const [allCategory, setAllCategorry] = useState([]);
   const [searchValue, setSearchValue] = useState("");
 
   const categorySearch = (e) => {
@@ -65,50 +91,119 @@ function EditProduct() {
     }
   };
 
-  const [images, setImages] = useState([]);
   const [imageShow, setImageShow] = useState([]);
 
-  const imageHandle = (e) => {
-    const files = e.target.files;
-    const length = files.length;
-    if (length > 0) {
-      setImages([...images, ...files]);
-      let imageUrl = [];
-      for (let i = 0; i < length; i++) {
-        imageUrl.push({ url: URL.createObjectURL(files[i]) });
-      }
-      setImageShow([...imageShow, ...imageUrl]);
-    }
-  };
+  // const imageHandle = (e) => {
+  //   const files = e.target.files;
+  //   const length = files.length;
+  //   if (length > 0) {
+  //     setImages([...images, ...files]);
+  //     let imageUrl = [];
+  //     for (let i = 0; i < length; i++) {
+  //       imageUrl.push({ url: URL.createObjectURL(files[i]) });
+  //     }
+  //     setImageShow([...imageShow, ...imageUrl]);
+  //   }
+  // };
 
   // console.log(images)
   // console.log(imageShow)
 
-  const changeImage = (img, index) => {
-    if (img) {
-      let tempUrl = imageShow;
-      let tempImages = images;
+  // const changeImage = (img, index) => {
+  //   if (img) {
+  //     let tempUrl = imageShow;
+  //     let tempImages = images;
 
-      tempImages[index] = img;
-      tempUrl[index] = { url: URL.createObjectURL(img) };
-      setImageShow([...tempUrl]);
-      setImages([...tempImages]);
+  //     tempImages[index] = img;
+  //     tempUrl[index] = { url: URL.createObjectURL(img) };
+  //     setImageShow([...tempUrl]);
+  //     setImages([...tempImages]);
+  //   }
+  // };
+
+  const changeImage = (img, files) => {
+    if (files.length > 0) {
+       dispatch(product_image_update({
+        oldImage: img,
+        newImage: files[0],
+        productId
+       }))
     }
   };
 
-  const removeImage = (i) => {
-    const filterImage = images.filter((img, index) => index !== i);
-    const filterImageUrl = imageShow.filter((img, index) => index !== i);
+  // const removeImage = (i) => {
+  //   const filterImage = images.filter((img, index) => index !== i);
+  //   const filterImageUrl = imageShow.filter((img, index) => index !== i);
 
-    setImages(filterImage);
-    setImageShow(filterImageUrl);
+  //   setImages(filterImage);
+  //   setImageShow(filterImageUrl);
+  // };
+
+  useEffect(() => {
+    setState({
+      name: product.name,
+      description: product.description,
+      discount: product.discount,
+      price: product.price,
+      brand: product.brand,
+      stock: product.stock,
+    });
+
+    setCategory(product.category);
+    setImageShow(product.images);
+  }, [product]);
+
+  useEffect(()=>{
+    if(categorys.length > 0){
+      setAllCategorry(categorys)
+    }
+
+
+  },[categorys])
+
+  const overrideStyle = {
+    display: "flex",
+    margin: "0 auto",
+    height: "24px",
+    justifyContent: "center",
+    alignItem: "center",
   };
+
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(messageClear());
+ 
+    }
+    if (errorMessage) {
+      toast.error(errorMessage);
+      dispatch(messageClear());
+    }
+  }, [errorMessage, successMessage]);
+
+
+  const update = (e) => {
+    e.preventDefault()
+    const obj = {
+      name: state.name,
+      description: state.description,
+      discount: state.discount,
+      price: state.price,
+      brand: state.brand,
+      stock: state.stock,
+      productId:productId
+
+    }
+    dispatch(update_product(obj))
+  }
 
   return (
     <div className="px-2 lg:px-7 pt-5">
       <div className="w-full p-4 bg-[#fefeff] rounded-md border border-[#d2d3d2] ">
         <div className="flex justify-between items-center pb-4">
-          <h1 className="text-[#6f6f70] text-xl font-semibold ">Edit Product</h1>
+          <h1 className="text-[#6f6f70] text-xl font-semibold ">
+            Edit Product
+          </h1>
 
           <Link
             to="/seller/dashboard/product"
@@ -119,7 +214,7 @@ function EditProduct() {
         </div>
 
         <div>
-          <form>
+          <form onSubmit={update} >
             <div className="flex flex-col mb-3 md:flex-row gap-4 w-full text-[#6f6f70] ">
               <div className="flex flex-col w-full gap-1">
                 <label htmlFor="name">Product Name</label>
@@ -178,7 +273,7 @@ function EditProduct() {
                   </div>
                   <div className="pt-14"></div>
                   <div className="flex justify-start items-start flex-col h-[200px] overflow-x-scroll ">
-                    {allCategory.map((c, i) => (
+                    { allCategory.length > 0 && allCategory.map((c, i) => (
                       <span
                         className={`px-4 py-2 hover:bg-indigo-500 hover:text-white hover:shadow-lg w-full cursor-pointer ${
                           category == c.name && "bg-indigo-500"
@@ -255,50 +350,31 @@ function EditProduct() {
             </div>
 
             <div className="grid lg:grid-cols-4 grid-cols-1 md:grid-cols-3 sm:grid-cols-2 sm:gap-4 md:gap-4 gap-3 w-full text-[#6f6f70] mt-4 mb-4">
-              {imageShow.map((img, i) => (
-                <div className="h-[180px] relative ">
+              { (imageShow && imageShow.length >0) && imageShow.map((img, i) => (
+                <div>
                   <label htmlFor={i}>
-                    <img
-                      className="w-full h-full rounded-sm "
-                      src={img.url}
-                      alt=""
-                    />
+                    <img src={img} alt="" />
                   </label>
                   <input
-                    onChange={(e) => changeImage(e.target.files[0], i)}
+                    onChange={(e) => changeImage(img, e.target.files)}
                     type="file"
                     id={i}
                     className="hidden"
                   />
-                  <span
-                    onClick={(e) => removeImage(i)}
-                    className="p-1 z-10 cursor-pointer bg-slate-700 hover:shadow-lg hover:shadow-slate-400/50 absolute top-1 right-1 rounded-full text-[#6f6f70] "
-                  >
-                    <IoMdCloseCircle />
-                  </span>
                 </div>
               ))}
-              <label
-                className="flex justify-center items-center flex-col h-[180px] cursor-pointer border border-dashed hover:border-red-500 w-full text-[#6f6f70] "
-                htmlFor="image"
-              >
-                <span>
-                  <FaImage />{" "}
-                </span>
-                <span>Select Image </span>
-              </label>
-              <input
-                className="hidden"
-                onChange={imageHandle}
-                multiple
-                type="file"
-                id="image"
-              />
             </div>
 
             <div>
-              <button className="bg-red-500 w-full hover:shadow-red-500/40 hover:shadow-md text-white rounded-md px-7 py-2 ">
-                Save Changes
+              <button
+                disabled={loader ? true : false}
+                className="bg-red-500 w-full hover:shadow-red-300/50  text-white rounded-md px-7 py-2 mb-3 cursor-pointer"
+              >
+                {loader ? (
+                  <PropagateLoader color="#fff" cssOverride={overrideStyle} />
+                ) : (
+                  "Save Changes"
+                )}
               </button>
             </div>
           </form>

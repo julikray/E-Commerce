@@ -4,6 +4,10 @@ import {   FaCartPlus, FaRupeeSign } from "react-icons/fa";
 import Chart from "react-apexcharts";
 import { Link } from "react-router-dom";
 import logo from "../../assets/image/logo.png";
+import box from "../../assets/image/box.png";
+import cart from "../../assets/image/trolley.png"
+import pendingorder from "../../assets/image/preorder.png"
+import sale from "../../assets/image/sales.png"
 
 function SellerDashboard() {
   const state = {
@@ -105,7 +109,7 @@ function SellerDashboard() {
           </div>
 
           <div className="w-[40px] h-[47px] rounded-full  flex justify-center items-center text-xl">
-            <FaRupeeSign />
+          <img src={sale} alt="sale"/>
           </div>
         </div>
 
@@ -116,7 +120,7 @@ function SellerDashboard() {
           </div>
 
           <div className="w-[40px] h-[47px] rounded-full  flex justify-center items-center text-xl">
-            <MdOutlineProductionQuantityLimits />
+          <img src={box} alt="box"/>
           </div>
         </div>
 
@@ -127,7 +131,7 @@ function SellerDashboard() {
           </div>
 
           <div className="w-[40px] h-[47px] rounded-full flex justify-center items-center text-xl">
-          <FaCartPlus />
+          <img src={cart} alt="cart"/>
           </div>
         </div>
 
@@ -138,7 +142,7 @@ function SellerDashboard() {
           </div>
 
           <div className="w-[40px] h-[47px] rounded-full   flex justify-center items-center text-xl">
-            <FaCartPlus />
+          <img src={pendingorder} alt="pendingorder"/>
           </div>
         </div>
       </div>
@@ -253,7 +257,7 @@ function SellerDashboard() {
 
         </div>
 
-        <div className="relative overflow-x-autoauto " >
+        <div className="relative overflow-x-auto " >
           <table className="w-full text-sm text-left text-[#6f6f70]  " >
             <thead className="text-sm text-[#6f6f70] uppercase border-b border-slate-700 " >
             <tr>
