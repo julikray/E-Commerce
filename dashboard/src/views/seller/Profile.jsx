@@ -192,7 +192,7 @@ function Profile() {
                       onChange={inputHandle}
                       className="px-4 py-2 focus:border-indigo-500 outline-none bg-[#eeefee] border border-slate-700 rounded-md text-[#6f6f70] "
                       type="text"
-                      name="district "
+                      name="district"
                       id="district"
                       placeholder="District Name"
                     />

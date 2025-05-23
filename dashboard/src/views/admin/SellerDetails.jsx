@@ -50,8 +50,8 @@ function SellerDetails() {
             <div>
              {
               seller?.image ?  <img
-              className="w-full  h-[230px]  bg-amber-500 "
-              src={logo}
+              className="w-full  h-[230px] "
+              src={ seller?.image || logo}
               alt="Logo"
             /> : <span>Image Not Uploaded</span>
              }

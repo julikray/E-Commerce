@@ -1,1 +1,21 @@
 @import "tailwindcss";
+@config "../tailwind.config.js"
+
+
+/* @theme {
+
+  --breakpoint-2xs:340px;
+  --breakpoint-xs-max:480px;
+  --breakpoint-sm:576px;
+  --breakpoint-md:768px;
+  --breakpoint-mdlg:991px;
+  --breakpoint-lg:1080px;
+  --breakpoint-xl:1200px;
+
+   @container/main
+    @max-md/main:hidden
+
+}  */
+
+
+   

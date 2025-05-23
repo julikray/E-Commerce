@@ -7,7 +7,6 @@ import formidable from "formidable";
 import { v2 as cloudinary } from "cloudinary";
 
 class AuthController {
-  
   async admin_login(req, res) {
     const { email, password } = req.body;
 
@@ -128,81 +127,84 @@ class AuthController {
     }
   }
 
-
   async profile_image_upload(req, res) {
+    console.log("Starting profile image upload...");
 
-    console.log("res")
-    
-    // const { id } = req;
-    // const form = formidable({ multiples: true });
+    const { id } = req;
+    const form = formidable({ multiples: false });
 
-    // form.parse(req, async (err, _, files) => {
-    //   cloudinary.config({
-    //     cloud_name: process.env.CLOUDINARY_NAME,
-    //     api_key: process.env.CLOUDINARY_API_KEY,
-    //     api_secret: process.env.CLOUDINARY_API_SECRET,
-    //     secure: true,
-    //   });
+    form.parse(req, async (err, fields, files) => {
+      if (err) {
+        console.log("Form parsing error:", err);
+        return res.status(400).json({ error: "Error in form parsing" });
+      }
 
-    //   const { image } = files;
+      console.log("Files:", files);
 
-    //   try {
-    //     const result = await cloudinary.uploader.upload(image.filepath, {
-    //       folder: "profile"
-    //     });
+      const image = files.image; // ✅ define image before using it
+      const imageFile = Array.isArray(image) ? image[0] : image;
 
-    //     if (result) {
-    //       await sellerModel.findByIdAndUpdate(id, {
-    //         image: result.url,
-    //       });
+      if (!imageFile || !imageFile.filepath) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
 
-           
-    //       return res
-    //         .status(201)
-    //         .json({ message: "Profile Image Updated Successfully" });
-    //     } else {
-    //       return res.status(404).json({ error: "Image Upload Failed" });
-    //     }
-    //   } catch (error) {
-    //     console.error("Upload Error:", error);
-    //     return res.status(500).json({ error: error.message });
-    //   }
-    // });
+      console.log("Image file path:", imageFile.filepath);
 
+      cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET,
+        secure: true,
+      });
 
-  }///error 
+      try {
+        const result = await cloudinary.uploader.upload(imageFile.filepath, {
+          folder: "profile",
+        });
 
+        if (result) {
+          await sellerModel.findByIdAndUpdate(id, {
+            image: result.url,
+          });
 
+          const userInfo = await sellerModel.findById(id);
 
+          return res.status(201).json({
+            userInfo,
+            message: "Profile Image Updated Successfully",
+          });
+        } else {
+          return res.status(404).json({ error: "Image Upload Failed" });
+        }
+      } catch (error) {
+        console.error("Upload Error:", error);
+        return res.status(500).json({ error: error.message });
+      }
+    });
+  }
 
   async profileInfoAdd(req, res) {
-    const { division , district ,shopName ,sub_district  } = req.body;
-    const {id} = req;
+    const { division, district, shopName, sub_district } = req.body;
+    const { id } = req;
 
     try {
-
-      await sellerModel.findByIdAndUpdate(id,{
+      await sellerModel.findByIdAndUpdate(id, {
         shopInfo: {
           shopName,
           division,
-          district,
-          sub_district
-        }
-      })
-      const userInfo = await sellerModel.findById(id)
-      return res.status(201).json({ message: 'Profile info add successfully' , userInfo });
-
-       
+          district, 
+          sub_district,
+        },
+      });
+      const userInfo = await sellerModel.findById(id);
+      return res
+        .status(201)
+        .json({ message: "Profile info add successfully", userInfo });
     } catch (error) {
       console.log(error);
       return res.status(500).send("Internal Server Error");
     }
   }
-
- 
-
-
-
 }
 
 export default new AuthController();

@@ -21,7 +21,7 @@ function Sidebar({showSidebar , setShowSidebar }) {
 
   return (
     <div>
-      <div onClick={() => setShowSidebar(false)} className={`flex duration-200 ${!showSidebar ? 'invisible': 'visible' } w-screen h-screen bg-[#836bca] top-0 left-0 z-10 fixed`} > 
+      <div onClick={() => setShowSidebar(false)} className={`flex duration-200 ${!showSidebar ? 'invisible': 'visible' } w-screen h-screen top-0 left-0 z-10 fixed`} > 
 
 
       </div>
