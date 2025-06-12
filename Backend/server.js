@@ -7,6 +7,10 @@ import cookieParser from "cookie-parser";
 import categoryRoutes from "./routes/categoryRoutes.js"; 
 import productRoutes from "./routes/productRoutes.js";
 import sellerRoutes from "./routes/sellerRoutes.js";
+import homeRoutes from "./routes/homeRoutes.js";
+import customerAuthRoutes from "./routes/customerAuthRoutes.js";
+import cardRoutes from "./routes/cardRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 
 // app config
 const app = express()
@@ -33,6 +37,10 @@ app.use("/api", authRoutes);
 app.use("/api", categoryRoutes); 
 app.use("/api" , productRoutes);
 app.use("/api" , sellerRoutes );
+app.use("/api/home", homeRoutes )
+app.use("/api/customer" , customerAuthRoutes )
+app.use('/api/home/product', cardRoutes);
+app.use('/api/home/order', orderRoutes);
 
 app.get("/" ,(req,res)=>{
     res.send("API working")

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Headers from "../components/Headers";
 import { FaChevronRight, FaThList } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Footer from "../components/Footer";
 import Pagination from "../components/Pagination";
 import { Range } from "react-range";
@@ -13,17 +13,19 @@ import ShopProducts from "../components/products/ShopProducts";
 import {  useDispatch, useSelector } from 'react-redux';
 import { priceRangeProduct, queryProducts} from "../store/reducers/homeReducer";
 
-function Shops() {
+function CategoryShop() {
 
-  
-  const dispatch = useDispatch()
-  const {  products , totalProduct ,  latestProducts ,categorys ,priceRange , parPage  } = useSelector(state=>state.home)
-  const [pageNumber, setPageNumber] = useState(1);
+  let [searchParams , setSearchParams] = useSearchParams()
+  const category = searchParams.get('category')
  
+  const dispatch = useDispatch()
+  const {  products , totalProduct ,  latestProducts , priceRange , parPage } = useSelector(state=>state.home)
+
+  const [pageNumber, setPageNumber] = useState(1);
   const [styles, setStyles] = useState("grid");
   const [filter, setFilter] = useState(true);
- const [category , setCategory] = useState('')
-  const [state, setState] = useState({ values: [priceRange.low , priceRange.high ] });
+ 
+ const [state, setState] = useState({ values: [priceRange.low , priceRange.high ] });
   const [rating , setRating] = useState('')
   const [sortPrice , setSortPrice] = useState('')
 
@@ -39,20 +41,14 @@ function Shops() {
 
   }, [priceRange])
 
-  const queryCategory = (e , value) => {
-    if(e.target.checked){
-      setCategory(value)
-    }else{
-      setCategory('')
-    }
-  }
+  
 
   // console.log(category)
   useEffect(() => {
     dispatch(
       queryProducts({
-        low: state.values[0],
-        high: state.values[1],
+        low: state.values[0] || '' ,
+        high: state.values[1] || '' ,
         category,
         rating,
         sortPrice,
@@ -60,7 +56,7 @@ function Shops() {
       })
     )
 
-  },[state.values[0] , state.values[1] , category , rating  , pageNumber , sortPrice ])
+  },[state.values[0] , state.values[1] , rating  , pageNumber , sortPrice ])
 
   const resetRating = () => {
     setRating('')
@@ -83,7 +79,7 @@ function Shops() {
             <div className="flex flex-col justify-center gap-1 items-center h-full w-full text-white ">
               <h2 className="text-3xl font-bold ">E-commerce.on</h2>
               <div className="flex justify-center items-center gap-2 text-2xl w-full ">
-                <Link  to="/" >Home</Link>
+                <Link>Home</Link>
                 <span className="pt-1">
                   <FaChevronRight /> 
                 </span>
@@ -112,26 +108,8 @@ function Shops() {
                   : "md:h-auto md:overflow-auto md:mb-0"
               } `}
             >
-              <h2 className="text-3xl font-bold mb-3 text-slate-600 ">
-                Category
-              </h2>
-              <div className="py-2">
-                {categorys.map((c, i) => (
-                  <div
-                    className=" flex justify-start items-center gap-2 py-1"
-                    key={i}
-                  >
-                    <input checked={category === c.name ? true : false } onChange={(e) => queryCategory(e,c.name)} type="checkbox" id={c.name} />
-                    <label
-                      className="text-slate-600 block cursor-pointer"
-                      htmlFor={c.name}
-                    >
-                      {c.name}
-                    </label>
-                  </div>
-                ))}
-              </div>
-
+              
+           
               <div className="py-2 flex flex-col gap-5 ">
                 <h2 className="text-3xl font-bold mb-3 text-slate-600">
                   Price
@@ -351,4 +329,4 @@ function Shops() {
   );
 }
 
-export default Shops;
+export default CategoryShop

@@ -1,19 +1,10 @@
 import React from "react";
 import Carousel from "react-multi-carousel";
 import { Link } from "react-router-dom";
-import img1 from "../../assets/image/products/1.webp";
-import img2 from "../../assets/image/products/2.webp";
-import img3 from "../../assets/image/products/3.webp";
-import img4 from "../../assets/image/products/4.webp";
-import img5 from "../../assets/image/products/5.webp";
-import img6 from "../../assets/image/products/6.webp";
-import img7 from "../../assets/image/products/7.webp";
-import img8 from "../../assets/image/products/8.webp";
 import { FaChevronLeft } from "react-icons/fa";
 import { FaChevronRight } from "react-icons/fa";
 
-function Products({title } ) {
-  const productImages = [img1, img2, img3, img4, img5, img6, img7, img8];
+function Products({title , products } ) {
 
   const responsive = {
     superLargeDesktop: {
@@ -34,12 +25,9 @@ function Products({title } ) {
     },
   };
 
-  const products = [
-    [1, 2, 3]
-    
-  ];
+ 
 
-const ButtonGroup = (next, previous) => {
+const ButtonGroup = ({next, previous}) => {
   return (
     <div className="flex justify-between items-center">
       <div className="text-xl font-bold text-slate-600 " >
@@ -75,10 +63,10 @@ const ButtonGroup = (next, previous) => {
           <div key={i} className="flex flex-col justify-start gap-2">
             {p.map((pl, j) => (
               <Link className="flex justify-start items-start " key={j} to="#">
-                <img className="w-[110px] h-[110px] " src={productImages[pl - 1]} alt="" /> 
+                <img className="w-[110px] h-[110px] " src={pl.images[0]} alt="images" /> 
                 <div className="px-3 flex justify-start items-start gap-1 flex-col text-slate-600 ">
-                  <h2>TV panel jegjdgj ekjhgjk</h2>
-                  <span className="text-lg font-bold">567</span>
+                  <h2>{pl.name} </h2>
+                  <span className="text-lg font-bold">Rs {pl.price} </span>
                 </div>
               </Link>
             ))}

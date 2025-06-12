@@ -39,7 +39,7 @@ function Banner() {
               <Carousel
                 autoPlay={true}
                 infinite={true}
-                arrows={true}
+                arrows={false}
                 showDots={true}
                 responsive={responsive}
               >
