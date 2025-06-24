@@ -49,6 +49,7 @@ function Product() {
       }
       dispatch(getProduct(obj) )
     },[searchValue , currentPage , parPage])
+    
 
   return (
     <div className="px-2 lg:px-7 pt-5">
@@ -109,7 +110,7 @@ function Product() {
                   >
                     <img
                       className="  w-[45px]  h-[45px]  bg-amber-50  "
-                      src={d.images}
+                      src={d.images[0]}
                       alt="Logo"
                     />
                   </td>

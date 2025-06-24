@@ -7,7 +7,7 @@ function Orders() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.auth);
-  const { myOrders, order } = useSelector((state) => state.order);
+  const { myOrders} = useSelector((state) => state.order);
   const [state, setState] = useState("all");
 
   useEffect(() => {

@@ -75,6 +75,101 @@ class sellerController {
     
   }
 
+  async getActiveSeller(req, res){
+    
+    let {page , searchValue , parPage } = req.query
+    page = parseInt(page)
+    parPage = parseInt(parPage)
+
+    const skipPage = parPage * (page - 1)
+
+    try {
+      if(searchValue) {
+        const sellers = await sellerModel.find({
+          $text: { $search : searchValue },
+          status: 'active'
+
+        }).skip(skipPage).limit(parPage).sort({createdAt: -1})
+
+        const totalSeller = await sellerModel.find({
+          $text: { $search : searchValue },
+          status: 'active'
+        }).countDocuments()
+
+         return res.status(200).json({ sellers , totalSeller });
+
+      } else {
+
+         const sellers = await sellerModel.find({ status: 'active' }).skip(skipPage).limit(parPage).sort({createdAt: -1})
+         const totalSeller = await sellerModel.find({
+           status: 'active'
+         }).countDocuments()
+   
+   
+         console.log(sellers)
+         return res.status(200).json({ sellers , totalSeller });
+
+
+
+      }
+
+
+      
+    } catch (error) {
+       return res.status(500).json({ error: error.message });
+      
+    }
+
+  }
+
+
+   async getDeactiveSeller(req, res){
+    
+    let {page , searchValue , parPage } = req.query
+    page = parseInt(page)
+    parPage = parseInt(parPage)
+
+    const skipPage = parPage * (page - 1)
+
+    try {
+      if(searchValue) {
+        const sellers = await sellerModel.find({
+          $text: { $search : searchValue },
+          status: 'deactive'
+
+        }).skip(skipPage).limit(parPage).sort({createdAt: -1})
+
+        const totalSeller = await sellerModel.find({
+          $text: { $search : searchValue },
+          status: 'deactive'
+        }).countDocuments()
+
+         return res.status(200).json({ sellers , totalSeller });
+
+      } else {
+
+         const sellers = await sellerModel.find({ status: 'deactive' }).skip(skipPage).limit(parPage).sort({createdAt: -1})
+         const totalSeller = await sellerModel.find({
+           status: 'deactive'
+         }).countDocuments()
+   
+   
+         console.log(sellers)
+         return res.status(200).json({ sellers , totalSeller });
+
+
+
+      }
+
+
+      
+    } catch (error) {
+       return res.status(500).json({ error: error.message });
+      
+    }
+
+  }
+
 
 
 }

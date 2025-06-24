@@ -71,27 +71,22 @@ export const seller_login = createAsyncThunk(
   }
 );
 
-export const profile_image_upload  = createAsyncThunk(
-    'auth/profile_image_upload',
-    async(image ,{rejectWithValue , fulfillWithValue }) => {
+export const profile_image_upload = createAsyncThunk(
+  "auth/profile_image_upload",
+  async (image, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.post("/profile-image-upload", image, {
+        withCredentials: true,
+      });
+      console.log(data);
 
-        try {
-            const {data} = await api.post('/profile-image-upload' , image, { withCredentials : true } )
-            console.log(data)
-
-            return fulfillWithValue(data)
-
-        } catch (error) {
-            console.log(error.response.data)
-            return  rejectWithValue(error.response.data)
-
-        }
+      return fulfillWithValue(data);
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
     }
-
-) /// error
-
-
-
+  }
+); /// error
 
 export const profileInfoAdd = createAsyncThunk(
   "auth/profileInfoAdd",
@@ -109,6 +104,32 @@ export const profileInfoAdd = createAsyncThunk(
     }
   }
 );
+
+
+export const logout = createAsyncThunk(
+  "auth/logout",
+  async ({ navigate, role }, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.get("/logout", {
+        withCredentials: true,
+      });
+
+      localStorage.removeItem("accessToken");
+
+      if (role === "seller") {
+        navigate("/login");
+      } else {
+        navigate("/admin/login");
+      }
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      // console.log(error.response.data)
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 
 const returnRole = (token) => {
   if (token) {
@@ -196,16 +217,15 @@ export const authReducer = createSlice({
         state.userInfo = payload.userInfo;
       })
 
-      .addCase(profile_image_upload.pending, (state , {payload}) => {
-          state.loader = true;
+      .addCase(profile_image_upload.pending, (state, { payload }) => {
+        state.loader = true;
+      })
 
-      } )
-
-      .addCase(profile_image_upload.fulfilled, (state , {payload}) => {
-          state.loader = false;
-          state.userInfo = payload.userInfo
-          state.successMessage = payload.message
-      } )
+      .addCase(profile_image_upload.fulfilled, (state, { payload }) => {
+        state.loader = false;
+        state.userInfo = payload.userInfo;
+        state.successMessage = payload.message;
+      })
 
       .addCase(profileInfoAdd.pending, (state, { payload }) => {
         state.loader = true;
@@ -215,9 +235,13 @@ export const authReducer = createSlice({
         state.loader = false;
         state.userInfo = payload.userInfo;
         state.successMessage = payload.message;
-      });
+      })
+
 
       
+    
+
+     
   },
 });
 export const { messageClear } = authReducer.actions;

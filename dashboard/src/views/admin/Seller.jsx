@@ -1,14 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/image/logo.png";
 import Pagination from "../Pagination";
 import { FaEye } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { getActiveSeller } from "../../store/Reducers/sellerReducer";
 
 function Seller() {
+
+
+  const dispatch = useDispatch();
   const [parPage, setParPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchValue, setSearchValue] = useState("");
-  const [show, setShow] = useState(false);
+  const { sellers, totalSeller } = useSelector((state) => state.seller);
+  // const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const obj = {
+      parPage: parseInt(parPage),
+      page: parseInt(currentPage),
+      searchValue,
+    };
+
+    dispatch(getActiveSeller(obj));
+  }, [searchValue, currentPage, parPage]);
 
   return (
     <div className="px-2 lg:px-7 pt-5 ">
@@ -23,6 +39,8 @@ function Seller() {
             <option value="20">20</option>
           </select>
           <input
+            onChange={(e) => setSearchValue(e.target.value)}
+            value={searchValue}
             className="px-4 py-2 focus:border-indigo-500 outline-none bg-[#eeefee]  border border-slate-700 rounded-md text-[#6f6f70] "
             type="text"
             placeholder="search"
@@ -66,13 +84,13 @@ function Seller() {
                 </thead>
 
                 <tbody>
-                  {[1, 2, 3, 4, 5].map((d, i) => (
+                  {sellers.map((d, i) => (
                     <tr key={i}>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap"
                       >
-                        {d}{" "}
+                        {i + 1}
                       </td>
                       <td
                         scope="row"
@@ -80,7 +98,7 @@ function Seller() {
                       >
                         <img
                           className="w-[45px]  h-[45px]  bg-pink-50 "
-                          src={logo}
+                          src={d.image}
                           alt="Logo"
                         />
                       </td>
@@ -89,44 +107,47 @@ function Seller() {
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap"
                       >
-                        Kazi Ariyan
+                        {d.name}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap"
                       >
-                        Easy
+                        {d.shopInfo?.shopName}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap"
                       >
-                        Pending
+                        {d.status}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap"
                       >
-                        ariyan@gmail.com
+                        {d.email}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap"
                       >
-                        Dhaka
+                        {d.shopInfo?.division}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap"
                       >
-                        Ultara
+                        {d.shopInfo?.district}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap"
                       >
                         <div className="flex justify-start items-center gap-4 ">
-                          <Link className="p-[6px]  bg-green-400  rounded hover:shadow-lg   ">
+                          <Link
+                            to={`/admin/dashboard/seller/details/${d._id}`}
+                            className="p-[6px]  bg-green-400  rounded hover:shadow-lg   "
+                          >
                             <FaEye />
                           </Link>
                         </div>
@@ -139,15 +160,20 @@ function Seller() {
           </div>
         </div>
 
-        <div className="w-full flex justify-end mt-4 bottom-4 right-4 ">
-          <Pagination
-            pageNumber={currentPage}
-            setPageNumber={setCurrentPage}
-            totalItem={50}
-            parPage={parPage}
-            showItem={3}
-          />
-        </div>
+        {totalSeller > parPage ? (
+          <div className="w-full flex justify-end mt-4 bottom-4 right-4 ">
+            <Pagination
+              pageNumber={currentPage}
+              setPageNumber={setCurrentPage}
+              totalItem={totalSeller}
+              parPage={parPage}
+              showItem={4}
+            />
+          </div>
+        ) : (
+          ""
+        )}
+        
       </div>
     </div>
   );

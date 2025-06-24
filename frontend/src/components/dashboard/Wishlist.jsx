@@ -3,7 +3,6 @@ import Ratings from "../products/Ratings";
 import { FaEye, FaHeart, FaShoppingCart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import box from "../../assets/image/box.png";
 import {
   getWishlistProducts,
   removeWishlistProducts,
@@ -32,7 +31,7 @@ function Wishlist() {
       {wishlist.map((p, i) => (
         <div
           key={i}
-          className="border rounded-md group  transition-all duration-500 hover:shadow-md hover:-mt-3 bg-white "
+          className=" rounded-md group  transition-all duration-500 hover:shadow-md hover:-mt-3 bg-white "
         >
           <div className="relative overflow-hidden">
             {p.discount !== 0 && (
@@ -47,13 +46,6 @@ function Wishlist() {
               alt="Product image"
             />
 
-            {/* <div className="w-full h-[400px] overflow-hidden">
-                <img
-                  className="w-full h-full object-fill "
-                  src={productImages[i]}
-                  alt={`Product ${p}`}
-                />
-              </div> */}
 
             <ul className="flex transition-all duration-700 -bottom-10 justify-center items-center gap-2 absolute w-full group-hover:bottom-3 ">
               <li

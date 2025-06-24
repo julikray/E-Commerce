@@ -10,6 +10,7 @@ import {
 } from "../../store/Reducers/authReducer";
 import toast from "react-hot-toast";
 import { PropagateLoader } from "react-spinners";
+import { createStripeConnectAccount } from "../../store/Reducers/sellerReducer";
 
 function Profile() {
   const [state, setState] = useState({
@@ -25,7 +26,7 @@ function Profile() {
     (state) => state.auth
   );
 
-  const status = "active";
+ 
 
   const add_image = (e) => {
     if (e.target.files.length > 0) {
@@ -142,12 +143,12 @@ function Profile() {
                 <div className="flex gap-2 text-[#6f6f70]  ">
                   <span>Payment Account : </span>
                   <p>
-                    {status === "active" ? (
+                    {userInfo.payment === "active" ? (
                       <span className="cursor-pointer px-2 py-1 text-xs text-red-500 font-bold bg-red-100 rounded-md ml-2">
                         {userInfo.payment}
                       </span>
                     ) : (
-                      <span className="bg-blue-500 text-white text-xs cursor-pointer font-normal ml-2 px-2 py-0.5 rounded ">
+                      <span onClick={() => dispatch(createStripeConnectAccount())} className="bg-blue-500 text-white text-xs cursor-pointer font-normal ml-2 px-2 py-0.5 rounded ">
                         Click Active
                       </span>
                     )}

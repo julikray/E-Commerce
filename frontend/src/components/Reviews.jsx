@@ -11,6 +11,7 @@ import {
   customerReview,
   clearMessages,
   getCustomerReview,
+  getProductDetails,
 } from "../store/reducers/homeReducer";
 import { toast } from "react-toastify";
 
@@ -46,6 +47,7 @@ function Reviews({ product }) {
           pageNumber,
         })
       );
+      dispatch(getProductDetails(product.slug));
       setRat("");
       setRev("");
       dispatch(clearMessages());
@@ -80,7 +82,7 @@ function Reviews({ product }) {
         <div className="flex gap-2 flex-col py-4">
           <div className="flex justify-start items-center gap-5">
             <div className="text-md flex gap-1 w-[93px] ">
-              <RatingTemp rating={4} />
+              <RatingTemp rating={5} />
             </div>
             <div className="w-[200px] h-[14px] bg-slate-200 relative ">
               <div
@@ -93,8 +95,7 @@ function Reviews({ product }) {
               ></div>
             </div>
             <p className="text-sm text-slate-600 w-[0%]">
-              {" "}
-              {ratingReview[0]?.sum}{" "}
+              {ratingReview[0]?.sum}
             </p>
           </div>
 

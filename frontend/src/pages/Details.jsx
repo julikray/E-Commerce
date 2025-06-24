@@ -347,9 +347,9 @@ function Details() {
                 ) : (
                   ""
                 )}
-                <button className="px-8 py-3 h-[50px] cursor-pointer hover:shadow-lg hover:shadow-emerald-500/40 bg-lime-500 text-white ">
+                <Link to={`/dashboard/chat/${product.sellerId}`} className="px-8 py-3 h-[50px] cursor-pointer hover:shadow-lg hover:shadow-emerald-500/40 bg-lime-500 text-white block ">
                   Chat Seller
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -418,6 +418,10 @@ function Details() {
 
                         <h2 className="text-slate-600 py-1 ">{p.name}</h2>
                         <div className="flex items-center gap-2">
+                           <h2 className="text-[#6699ff] text-lg font-bold ">
+                            Rs {p.price} 
+                          </h2>
+
                           <Ratings ratings={p.rating} />
                         </div>
                       </Link>
@@ -479,7 +483,7 @@ function Details() {
 
                         <div className="flex justify-start items-center gap-3 ">
                           <h2 className="text-[#6699ff] text-lg font-bold ">
-                            Rs {p.price}{" "}
+                            Rs {p.price} 
                           </h2>
 
                           <div className="flex items-center gap-2">

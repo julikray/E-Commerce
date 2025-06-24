@@ -16,4 +16,6 @@ authRoutes.post("/seller-login", sellerLoginValidator, validateRequest, authCont
 authRoutes.post("/profile-image-upload", authMiddleware, authController.profile_image_upload );
 authRoutes.post( "/profile-Info-Add", authMiddleware, authController.profileInfoAdd );
 
+authRoutes.get("/logout", authController.logout);
+
 export default authRoutes;

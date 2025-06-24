@@ -1,13 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CgArrowDownR } from "react-icons/cg";
 import { Link } from "react-router-dom";
 import Pagination from "../Pagination";
+import { useDispatch, useSelector } from "react-redux";
+import { getAdminOrders } from "../../store/Reducers/orderReducer";
 
 function Orders() {
+
+  const dispatch = useDispatch();
+  const { totalOrder , myOrders } = useSelector(state => state.order)
   const [currentPage, setCurrentPage] = useState(1);
   const [searchValue, setSearchValue] = useState("");
   const [parPage, setParPage] = useState(5);
   const [show , setShow] = useState(false)
+
+   useEffect(() => {
+     const obj = {
+       parPage: parseInt(parPage),
+       page: parseInt(currentPage),
+       searchValue,
+     };
+ 
+     dispatch(getAdminOrders(obj));
+   }, [searchValue, currentPage, parPage]);
 
   return (
     <div className="px-2 lg:px-7 pt-5 ">
@@ -44,39 +59,41 @@ function Orders() {
               </div>
             </div>
 
-            
-
-
-            <div className=" text-[#6f6f70] ">
+          
+          {
+            myOrders.map((o,i) =>  <div className=" text-[#6f6f70] ">
               <div className="flex justify-between items-start  ">
-                <div className="py-3 w-[25%] font-medium whitespace-nowrap ">#34535</div>
-                <div className="py-3 w-[13%] font-medium  ">Rs 4555</div>
+                <div className="py-3 w-[25%] font-medium whitespace-nowrap ">{o._id} </div>
+                <div className="py-3 w-[13%] font-medium  ">Rs {o.price} </div>
                 <div className="py-3 w-[18%] font-medium  ">
-                  <span className="px-2 py-1 text-xs text-green-500 font-bold bg-green-100 rounded-md " >Pending</span>
+                  <span className="px-2 py-1 text-xs text-green-500 font-bold bg-green-100 rounded-md " >{o.paymentStatus} </span>
                   </div>
                   <div className="py-3 w-[18%] font-medium  ">
-                  <span className="px-2 py-1 text-xs text-green-500 font-bold bg-green-100 rounded-md " >Pending</span>
+                  <span className="px-2 py-1 text-xs text-green-500 font-bold bg-green-100 rounded-md " >{o.deliveryStatus} </span>
                   </div>
                 <div className="py-3 w-[18%] font-medium  "> 
-                    <Link to='/admin/dashboard/order/details/2' >View</Link>
+                    <Link to={`/admin/dashboard/order/details/${o._id}`} >View</Link>
                 </div>
-                <div onClick={(e) => setShow(!show) } className="py-3 w-[8%] font-medium ">
+                <div onClick={(e) => setShow(o._id) } className="py-3 w-[8%] font-medium ">
                   <CgArrowDownR />
                 </div>
               </div>
 
-              <div className={show ? 'block  bg-[#eeefee] ' : 'hidden' } >
+              <div className={show === o._id ? 'block  bg-[#eeefee] ' : 'hidden' } >
 
-              <div className="flex justify-start items-start  ">
-                <div className="py-3 w-[25%] font-medium whitespace-nowrap pl-3 ">#34535</div>
-                <div className="py-3 w-[13%] font-medium  ">Rs 4555</div>
+             {
+              o.subOrder.map((so , i) =>  <div className="flex justify-start items-start  ">
+                <div className="py-3 w-[25%] font-medium whitespace-nowrap pl-3 ">{so._id} </div>
+                <div className="py-3 w-[13%] font-medium  ">Rs {so.price} </div>
                 <div className="py-3 w-[18%] font-medium  ">
-                  <span className="px-2 py-1 text-xs text-green-500 font-bold bg-green-100 rounded-md " >Pending</span>
+                  <span className="px-2 py-1 text-xs text-green-500 font-bold bg-green-100 rounded-md " >{so.paymentStatus}</span>
                   </div>
                   <div className="py-3 w-[18%] font-medium  ">
-                  <span className="px-2 py-1 text-xs text-green-500 font-bold bg-green-100 rounded-md " >Pending</span>
+                  <span className="px-2 py-1 text-xs text-green-500 font-bold bg-green-100 rounded-md " >{so.deliveryStatus}</span>
                   </div>
                 </div>
+                )
+             }
 
 
               </div>
@@ -87,6 +104,9 @@ function Orders() {
 
 
             </div>
+            )
+          }
+           
 
 
 
@@ -95,16 +115,19 @@ function Orders() {
           </div>
         </div>
         
-        <div className="w-full flex justify-end mt-4 bottom-4 right-4 " >
-        <Pagination
-        pageNumber = {currentPage}
-        setPageNumber = {setCurrentPage}
-        totalItem = {50}
-        parPage= {parPage}
-        showItem = {3}   
-        />
-
-        </div>
+       {totalOrder > parPage ? (
+          <div className="w-full flex justify-end mt-4 bottom-4 right-4 ">
+            <Pagination
+              pageNumber={currentPage}
+              setPageNumber={setCurrentPage}
+              totalItem={totalOrder}
+              parPage={parPage}
+              showItem={4}
+            />
+          </div>
+        ) : (
+          ""
+        )}
 
       </div>
     </div>

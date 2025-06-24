@@ -4,6 +4,7 @@ import  authReducer  from './reducers/authReducer';
 import cardReducer from './reducers/cardReducer';
 import  orderReducer  from './reducers/orderReducer';
 import dashboardReducer  from './reducers/dashboardReducer';
+import  chatReducer  from './reducers/chatReducer';
 
 
 const rootReducer = combineReducers({
@@ -11,7 +12,8 @@ const rootReducer = combineReducers({
      auth: authReducer,
      card: cardReducer,
      order: orderReducer,
-     dashboard: dashboardReducer
+     dashboard: dashboardReducer,
+     chat: chatReducer
  
 });
 

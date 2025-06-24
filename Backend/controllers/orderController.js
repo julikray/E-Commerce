@@ -39,6 +39,7 @@ class orderController {
       const pro = products[i].products;
       for (let j = 0; j < pro.length; j++) {
         let tempCusPro = pro[j].productInfo;
+        tempCusPro.quantity = pro[j].quantity;
         customerOrderProduct.push(tempCusPro);
         if (pro[j]._id) {
           cardId.push(pro[j]._id);
@@ -97,88 +98,227 @@ class orderController {
     }
   };
 
-  getDashboardIndexData = async(req , res) => {
+  getDashboardIndexData = async (req, res) => {
     // console.log(req.params)
-    const {userId} = req.params
+    const { userId } = req.params;
 
     try {
-        const recentOrders = await customerOrder.find({
-            customerId: new mongoose.Types.ObjectId(userId)
+      const recentOrders = await customerOrder.find({
+        customerId: new mongoose.Types.ObjectId(userId),
+      });
+      const pendingOrder = await customerOrder
+        .find({
+          customerId: new mongoose.Types.ObjectId(userId),
+          deliveryStatus: "pending",
         })
-        const pendingOrder = await customerOrder.find({
-            customerId: new mongoose.Types.ObjectId(userId),
-            deliveryStatus: 'pending'
-        }).countDocuments()
+        .countDocuments();
 
-        const totalOrder = await customerOrder.find({
-            customerId: new mongoose.Types.ObjectId(userId),
+      const totalOrder = await customerOrder
+        .find({
+          customerId: new mongoose.Types.ObjectId(userId),
+        })
+        .countDocuments();
 
-        }).countDocuments()
-        
-        const cancelledOrder = await customerOrder.find({
-            customerId: new mongoose.Types.ObjectId(userId),
-            deliveryStatus: 'cancelled'
-        }).countDocuments()
-        
-         return res.status(200).json({ recentOrders, pendingOrder , totalOrder , cancelledOrder });
+      const cancelledOrder = await customerOrder
+        .find({
+          customerId: new mongoose.Types.ObjectId(userId),
+          deliveryStatus: "cancelled",
+        })
+        .countDocuments();
 
-        
-        
+      return res
+        .status(200)
+        .json({ recentOrders, pendingOrder, totalOrder, cancelledOrder });
     } catch (error) {
-        console.log(error)
-        return res.status(500).send("Internal Server Error");
-        
+      console.log(error);
+      return res.status(500).send("Internal Server Error");
     }
+  };
 
-  }
-
-  getOrder = async(req , res) => {
-    const { customerId , status } = req.params
+  getOrder = async (req, res) => {
+    const { customerId, status } = req.params;
 
     try {
-      let orders = []
-      if(status !== 'all'){
+      let orders = [];
+      if (status !== "all") {
         orders = await customerOrder.find({
           customerId: new mongoose.Types.ObjectId(customerId),
-          deliveryStatus:status
-        })
+          deliveryStatus: status,
+        });
       } else {
         orders = await customerOrder.find({
-          customerId : new mongoose.Types.ObjectId(customerId)
-        })
+          customerId: new mongoose.Types.ObjectId(customerId),
+        });
       }
 
       return res.status(200).json({ orders });
-
-      
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return res.status(500).send("Internal Server Error");
-      
     }
-  
+  };
 
-  }
-
-  getOrders = async(req , res) => {
-    const {  orderId } = req.params
+  getOrders = async (req, res) => {
+    const { orderId } = req.params;
 
     try {
-
-      const order = await customerOrder.findById(orderId)
-     
+      const order = await customerOrder.findById(orderId);
 
       return res.status(200).json({ order });
-
-      
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return res.status(500).send("Internal Server Error");
-      
     }
-  
+  };
 
-  }
+  getAdminOrders = async (req, res) => {
+    let { page, searchValue, parPage } = req.query;
+    page = parseInt(page);
+    parPage = parseInt(parPage);
+
+    const skipPage = parPage * (page - 1);
+
+    try {
+      if (searchValue) {
+        // const sellers = await sellerModel.find({
+      } else {
+        const orders = await customerOrder
+          .aggregate([
+            {
+              $lookup: {
+                from: "authorders",
+                localField: "_id",
+                foreignField: "orderId",
+                as: "subOrder",
+              },
+            },
+          ])
+          .skip(skipPage)
+          .limit(parPage)
+          .sort({ createdAt: -1 });
+
+        const totalOrder = await customerOrder.aggregate([
+          {
+            $lookup: {
+              from: "authorders",
+              localField: "_id",
+              foreignField: "orderId",
+              as: "subOrder",
+            },
+          },
+        ]);
+
+        return res.status(200).json({ orders, totalOrder: totalOrder.length });
+      }
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  };
+
+  getAdminOrdersDetails = async (req, res) => {
+    const { orderId } = req.params;
+
+    try {
+      const order = await customerOrder.aggregate([
+        {
+          $match: {
+            _id: new mongoose.Types.ObjectId(orderId),
+          },
+        },
+        {
+          $lookup: {
+            from: "authorders",
+            localField: "_id",
+            foreignField: "orderId",
+            as: "subOrder",
+          },
+        },
+      ]);
+
+      return res.status(200).json({ order: order[0] });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  };
+
+  adminOrderStatusUpdate = async (req, res) => {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    try {
+      await customerOrder.findByIdAndUpdate(orderId, {
+        deliveryStatus: status,
+      });
+
+      return res.status(200).json({ message: "order status change success" });
+    } catch (error) {
+      console.log("get admin order status error" + error.message);
+      return res.status(500).json({ message: "internal server error" });
+    }
+  };
+
+  getSellerOrders = async (req, res) => {
+    const { sellerId } = req.params;
+    let { page, searchValue, parPage } = req.query;
+    page = parseInt(page);
+    parPage = parseInt(parPage);
+
+    const skipPage = parPage * (page - 1);
+
+    try {
+      if (searchValue) {
+       
+      } else {
+        const orders = await authOrder
+          .find( {
+            sellerId,
+          })
+          .skip(skipPage)
+          .limit(parPage)
+          .sort({ createdAt: -1 });
+
+        const totalOrder =  await authOrder
+          .find( {
+            sellerId,
+          }).countDocuments()
+
+        return res.status(200).json({ orders, totalOrder  });
+      }
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  };
+
+
+   getSellerOrdersDetails = async (req, res) => {
+    const { orderId } = req.params;
+
+    try {
+      const order = await authOrder.findById( orderId);
+
+      return res.status(200).json({ order  });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  };
+
+  sellerOrderStatusUpdate = async (req, res) => {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    try {
+      await authOrder.findByIdAndUpdate(orderId, {
+        deliveryStatus: status,
+      });
+
+      return res.status(200).json({ message: "order status change success" });
+    } catch (error) {
+      console.log("get admin order status error" + error.message);
+      return res.status(500).json({ message: "internal server error" });
+    }
+  };
+
+
 
 
 }

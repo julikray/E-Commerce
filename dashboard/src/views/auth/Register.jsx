@@ -128,19 +128,9 @@ function Register() {
               </p>
             </div>
 
-            <div className="w-full flex justify-center items-center my-3">
-              <div className="w-[45%] bg-[#836bca]  h-[1px]"></div>
-              <div className="w-[10%] flex justify-center items-center">
-                <span className="pb-1">Or</span>
-              </div>
-              <div className="w-[45%] bg-[#836bca]  h-[1px]"></div>
-            </div>
+           
 
-            <div className="flex justify-center items-center gap-3">
-              <div className="w-full h-[35px] text-white flex rounded-md bg-red-500  shadow-lg justify-center cursor-pointer items-center">
-                <span><FaGoogle /></span>
-              </div>
-            </div>
+           
           </form>
         </div>
       </div>

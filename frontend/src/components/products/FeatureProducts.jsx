@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import box from "../../assets/image/box.png";
 import { FaEye, FaHeart, FaShoppingCart } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Ratings from "./Ratings";

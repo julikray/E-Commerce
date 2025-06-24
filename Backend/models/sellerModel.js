@@ -44,6 +44,20 @@ const sellerSchema = new mongoose.Schema({
     
 },{timestamps: true})
 
+sellerSchema.index({
+    name:'text',
+    email:'text',
+   
+
+},{
+    weights : {
+        name : 5,
+        email: 4,
+      
+    }
+})
+
+
 
 
 const Seller = mongoose.model("sellers" , sellerSchema);

@@ -1,8 +1,12 @@
 import React from 'react'
 import { FaList } from "react-icons/fa";
-import logo from "../assets/image/logo.png";
+import { useSelector } from 'react-redux';
+import profileimg from "../assets/image/profileimg.jpg";
 
 function Header({showSidebar , setShowSidebar }) {
+
+  const { userInfo } = useSelector((state) => state.auth);
+
   return (
     <div className='fixed top-0 left-0 w-full py-5 px-2 lg:px-7 z-40 ' >
       
@@ -17,10 +21,10 @@ function Header({showSidebar , setShowSidebar }) {
         <div className='flex justify-center items-center ' >
           <div className='flex justify-center items-center gap-3 ' >
             <div className='flex justify-center items-center flex-col text-end ' >
-              <h2 className='text-md font-bold ' >Kazi Kumari</h2>
-              <span className='text-[14px] w-full font-normal ' >Admin</span>
+              <h2 className='text-md font-bold ' >{userInfo.name} </h2>
+              <span className='text-[14px] w-full font-normal ' >{userInfo.role}</span>
             </div>
-           <img className=' w-[45px] h-[45px] rounded-md bg-amber-300 ' src={logo} alt="Logo" />
+           <img className=' w-[45px] h-[45px] rounded-md bg-amber-300 ' src={userInfo.image || profileimg } alt="Logo" />
 
           </div>
 

@@ -30,8 +30,8 @@ function Order() {
               Home
             </span>
             <span className="text-slate-600 text-sm ">
-              {myOrder.shippingInfo?.address} {myOrder.shippingInfo?.pinCode}{" "}
-              {myOrder.shippingInfo?.city}{" "}
+              {myOrder.shippingInfo?.address} {myOrder.shippingInfo?.pinCode}
+              {myOrder.shippingInfo?.city}
             </span>
           </p>
           <p className="text-slate-600 text-sm font-semibold ">
@@ -42,7 +42,7 @@ function Order() {
         <div className="text-slate-600">
           <h2>Price: ${myOrder.price} include shipping fee</h2>
           <p>
-            Payment status:{" "}
+            Payment status:
             <span
               className={`py-[1px] text-xs px-3 ${
                 myOrder.paymentStatus === "paid"
@@ -50,11 +50,11 @@ function Order() {
                   : "bg-red-100 text-red-800 "
               } rounded-md `}
             >
-              {myOrder.paymentStatus}{" "}
-            </span>{" "}
+              {myOrder.paymentStatus}
+            </span>
           </p>
           <p>
-            Order status:{" "}
+            Order status:
             <span
               className={`py-[1px] text-xs px-3 ${
                 myOrder.deliveryStatus === "paid"
@@ -62,8 +62,8 @@ function Order() {
                   : "bg-red-100 text-red-800 "
               } rounded-md `}
             >
-              {myOrder.deliveryStatus}{" "}
-            </span>{" "}
+              {myOrder.deliveryStatus}
+            </span>
           </p>
         </div>
       </div>

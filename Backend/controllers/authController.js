@@ -192,7 +192,7 @@ class AuthController {
         shopInfo: {
           shopName,
           division,
-          district, 
+          district,
           sub_district,
         },
       });
@@ -205,6 +205,29 @@ class AuthController {
       return res.status(500).send("Internal Server Error");
     }
   }
+
+
+  async logout(req, res) {    
+    
+    try {
+      res.cookie('accessToken', null , {
+        expires: new Date(Date.now()),
+        httpOnly: true
+      } )
+
+       return res
+        .status(200)
+        .json({ message: "logout success" });
+
+      
+    } catch (error) {
+       console.log(error);
+      return res.status(500).send("Internal Server Error");
+      
+    }
+
+  }
+
 }
 
 export default new AuthController();

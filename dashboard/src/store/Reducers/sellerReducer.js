@@ -57,6 +57,72 @@ export const sellerStatusUpdate = createAsyncThunk(
 );
 
 
+export const getActiveSeller = createAsyncThunk(
+  "seller/getActiveSeller",
+  async ({ parPage, page, searchValue }, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      
+       const { data } = await api.get(
+        `/getActiveSeller?page=${page}&&searchValue=${searchValue}&&parPage=${parPage} `,
+        { withCredentials: true }
+      );
+
+
+      console.log(data);
+      return fulfillWithValue(data);
+    } catch (error) {
+      // console.log(error.response.data)
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
+export const getDeactiveSeller = createAsyncThunk(
+  "seller/getDeactiveSeller",
+  async ({ parPage, page, searchValue }, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      
+       const { data } = await api.get(
+        `/getDeactiveSeller?page=${page}&&searchValue=${searchValue}&&parPage=${parPage} `,
+        { withCredentials: true }
+      );
+
+
+      console.log(data);
+      return fulfillWithValue(data);
+    } catch (error) {
+      // console.log(error.response.data)
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
+
+export const createStripeConnectAccount = createAsyncThunk(
+  "seller/createStripeConnectAccount",
+  async (   ) => {
+    try {
+      
+       const { data } = await api.get(
+        '/payment/createStripeConnectAccount',
+        { withCredentials: true }
+      );
+
+
+      console.log(data);
+      // return fulfillWithValue(data);
+    } catch (error) {
+      // console.log(error.response.data)
+      // return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
+
+
 export const sellerReducer = createSlice({
   name: "category",
   initialState: {
@@ -92,6 +158,17 @@ export const sellerReducer = createSlice({
       
    })
 
+     .addCase(getActiveSeller.fulfilled, (state, { payload }) => {
+      state.sellers = payload.sellers;
+      state.totalSeller = payload.totalSeller;
+      
+   })
+
+    .addCase(getDeactiveSeller.fulfilled, (state, { payload }) => {
+      state.sellers = payload.sellers;
+      state.totalSeller = payload.totalSeller;
+      
+   })
 
 
 

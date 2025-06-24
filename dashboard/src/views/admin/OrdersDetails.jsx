@@ -1,7 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../assets/image/logo.png";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  adminOrderStatusUpdate,
+  getAdminOrdersDetails,
+  messageClear,
+} from "../../store/Reducers/orderReducer";
+import toast from "react-hot-toast";
 
 function OrdersDetails() {
+  const { orderId } = useParams();
+  const dispatch = useDispatch();
+
+  const { order, errorMessage, successMessage } = useSelector(
+    (state) => state.order
+  );
+
+  useEffect(() => {
+    dispatch(getAdminOrdersDetails(orderId));
+  }, [orderId]);
+
+  const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    setStatus(order?.deliveryStatus);
+  }, [order]);
+
+  const statusUpdate = (e) => {
+    dispatch(
+      adminOrderStatusUpdate({ orderId, info: { status: e.target.value } })
+    );
+    setStatus(e.target.value);
+  };
+
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(messageClear());
+    }
+    if (errorMessage) {
+      toast.error(errorMessage);
+      dispatch(messageClear());
+    }
+  }, [errorMessage, successMessage]);
+
   return (
     <div className="px-2 lg:px-7 pt-5">
       <div className="w-full p-4 bg-[#fefeff] rounded-md border border-[#d2d3d2] ">
@@ -9,126 +52,109 @@ function OrdersDetails() {
           <h2 className="text-xl text-[#6f6f70] ">Order Details</h2>
 
           <select
+            onChange={statusUpdate}
+            value={status}
             name=""
             id=""
             className="px-4 py-2 hover:border-indigo-500 outline-none bg-[#eeefee]  border border-slate-700 rounded-md text-[#6f6f70] "
           >
-            <option value="5">pending</option>
-            <option value="10">processing</option>
-            <option value="20">warehouse</option>
-            <option value="20">placed</option>
-            <option value="20">cancelled</option>
+            <option value="pending">pending</option>
+            <option value="processing">processing</option>
+            <option value="warehouse">warehouse</option>
+            <option value="placed">placed</option>
+            <option value="cancelled">cancelled</option>
           </select>
         </div>
 
         <div className="p-4">
           <div className="flex gap-2 text-lg text-[#6f6f70] ">
-            <h2>#34344</h2>
-            <span>3 Jan 2024</span>
+            <h2>#{order._id} </h2>
+            <span> {order.date} </span>
           </div>
 
           <div className="flex flex-wrap">
             <div className="w-[30%] ">
               <div className="pr-3 text-[#6f6f70] text-lg">
                 <div className="flex flex-col gap-1">
-                  <h2 className="pb-2 font-semibold">Deliver To : Raju Kahn</h2>
+                  <h2 className="pb-2 font-semibold">
+                    Deliver To : {order.shippingInfo?.name}
+                  </h2>
                   <p>
                     <span className="text-sm">
-                      Cecillia ChapmanNulla St. Mankato Mississippi
+                      {order.shippingInfo?.address} , {order.shippingInfo?.city}{" "}
+                      , {order.shippingInfo?.pinCode}
                     </span>
                   </p>
                 </div>
 
                 <div className="flex justify-start items-center gap-3  ">
                   <h2>Payment Status :</h2>
-                  <span className="text-base">Paid</span>
+                  <span className="text-base"> {order.paymentStatus} </span>
                 </div>
-                <span>Price : Rs 232</span>
+                <span>Price : Rs {order.price}</span>
 
                 <div className="mt-4 flex flex-col gap-4 bg-[#eeefee] rounded-md border border-[#d2d3d2] ">
-                  <div className="text-[#6f6f70] ">
-                    <div className="flex gap-3 text-md">
-                      <img
-                        className="  w-[45px]  h-[45px]  bg-amber-50  "
-                        src={logo}
-                        alt="Logo"
-                      />
+                  <div className="text-[#6f6f70] flex flex-col gap-8 ">
+                    {order.products &&
+                      order.products.map((p, i) => (
+                        <div key={i} className="flex gap-3 text-md">
+                          <img
+                            className="  w-[45px]  h-[45px]  bg-amber-50  "
+                            src={p.images[0]}
+                            alt="images"
+                          />
 
-                      <div>
-                        <h2>Product Name here</h2>
-                        <p>
-                          <span>Brand : </span>
-                          <span>Easy</span>
-                          <span className="text-lg" >Quantity : 3</span>
-                        </p>
-                      </div>
-
-                    </div>
-
+                          <div>
+                            <h2>Product Name here</h2>
+                            <p>
+                              <span>Brand : </span>
+                              <span>{p.brand} , </span>
+                              <span className="text-lg">
+                                Quantity : {p.quantity}{" "}
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                   </div>
                 </div>
               </div>
-
-
             </div>
-              <div className="w-[70%] " >
-                <div className="pl-3" >
-                  <div className="mt-4 p-4 flex flex-col bg-[#eeefee] rounded-md border border-[#d2d3d2]" >
-                    <div className="text-[#6f6f70] mt-2" >
-                      <div className="flex justify-start items-center gap-3" >
-                        <h2>Seller 1 Order : </h2>
-                        <span>pending</span>
-                      </div>
-                      <div className="flex gap-3 text-md mt-2">
-                      <img
-                        className="  w-[45px]  h-[45px]  bg-amber-50  "
-                        src={logo}
-                        alt="Logo"
-                      />
-
-                      <div>
-                        <h2>Product Name here</h2>
-                        <p>
-                          <span>Brand : </span>
-                          <span>Easy</span>
-                          <span className="text-lg" >Quantity : 3</span>
-                        </p>
+            <div className="w-[70%] ">
+              <div className="pl-3">
+                <div className="mt-4 p-4 flex flex-col bg-[#eeefee] rounded-md border border-[#d2d3d2]">
+                  {order?.subOrder?.map((o, i) => (
+                    <div key={i + 20} className="text-[#6f6f70] mt-2 ">
+                      <div className="flex justify-start items-center gap-3">
+                        <h2>Seller {i + 1} Order : </h2>
+                        <span>{o.deliveryStatus}</span>
                       </div>
 
+                      {o.products?.map((p, i) => (
+                        <div key={i} className="flex gap-3 text-md mt-2">
+                          <img
+                            className="  w-[45px]  h-[45px]  bg-amber-50  "
+                            src={p.images[0]}
+                            alt="Logo"
+                          />
+
+                          <div>
+                            <h2>{p.name}</h2>
+                            <p>
+                              <span>Brand : </span>
+                              <span>{p.brand} , </span>
+                              <span className="text-lg">
+                                Quantity : {p.quantity}{" "}
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-
-                    </div>
-
-                    <div className="text-[#6f6f70] mt-2" >
-                      <div className="flex justify-start items-center gap-3" >
-                        <h2>Seller 1 Order : </h2>
-                        <span>pending</span>
-                      </div>
-                      <div className="flex gap-3 text-md mt-2">
-                      <img
-                        className="  w-[45px]  h-[45px]  bg-amber-50  "
-                        src={logo}
-                        alt="Logo"
-                      />
-
-                      <div>
-                        <h2>Product Name here</h2>
-                        <p>
-                          <span>Brand : </span>
-                          <span>Easy</span>
-                          <span className="text-lg" >Quantity : 3</span>
-                        </p>
-                      </div>
-
-                    </div>
-
-                    </div>
-
-                  </div>
-
+                  ))}
                 </div>
-
               </div>
+            </div>
           </div>
         </div>
       </div>

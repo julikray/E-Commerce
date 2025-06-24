@@ -2,7 +2,7 @@ import React from 'react'
 
 function ChangePassword() {
   return (
-    <div className='p-4 bg-white ' >
+    <div className='p-4 bg-white rounded-md ' >
       <h2 className='text-xl text-slate-600 pb-5 ' >Change Password</h2>
       <form >
         <div className='flex flex-col gap-1 mb-2 ' >
