@@ -119,7 +119,7 @@ function Seller() {
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap"
                       >
-                        {d.status}
+                        {d.payment}
                       </td>
                       <td
                         scope="row"

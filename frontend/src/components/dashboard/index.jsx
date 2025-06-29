@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react'
 import { FaShoppingCart } from 'react-icons/fa'
-import { Link, redirect } from 'react-router-dom'
+import { Link ,useNavigate   } from 'react-router-dom'
 import { useDispatch ,useSelector } from "react-redux";
 import {getDashboardIndexData} from '../../store/reducers/dashboardReducer'
 
+
 function index() {
+
+    const navigate = useNavigate();
     const {userInfo} = useSelector(state => state.auth)
     const { recentOrders, pendingOrder , totalOrder , cancelledOrder  } = useSelector(state => state.dashboard )
 
@@ -19,7 +22,7 @@ function index() {
         for(let i=0; i<ord.length; i++ ){
             items = ord.products[i].quantity + items
         }
-        Navigate('/payment' , {
+        navigate('/payment' , {
             state : {
                 price : ord.price,
                 items,

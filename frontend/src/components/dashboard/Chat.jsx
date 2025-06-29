@@ -16,6 +16,7 @@ import {
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useRef } from "react";
+import { FaList } from "react-icons/fa";
 
 export const socket = io("http://localhost:4000", {
   withCredentials: true,
@@ -104,10 +105,12 @@ function Chat() {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [fd_messages]);
 
+  const [ show , setShow] = useState(false)
+
   return (
     <div className="bg-white p-3 rounded-md ">
-      <div className="w-full flex ">
-        <div className="w-[230px] ">
+      <div className="w-full flex relative ">
+        <div className={`w-[230px] md:absolute bg-white transition-all md:h-full ${show ? 'left-0' : '-left-[350px]'} ` }>
           <div className="flex justify-center gap-3 items-center text-slate-600 text-xl h-[50px] ">
             <span>
               <RiMessage2Fill />
@@ -138,10 +141,11 @@ function Chat() {
           </div>
         </div>
 
-        <div className="w-[calc(100%-230px)] ">
+        <div className="w-[calc(100%-230px)] md:w-full ">
           {currentFd ? (
             <div className="w-full h-full ">
-              <div className="flex justify-start gap-3 items-center text-slate-600 text-xl h-[50px] ">
+              <div className="flex justify-between items-center text-slate-600 text-xl h-[50px] ">
+                <div className="flex gap-2 " >
                 <div className="w-[30px] h-[30px] rounded-md relative ">
                   <img
                     className="w-[30px]  h-[30px] border-[#836bca] border-2 max-w-[38px] p-[2px] rounded-full "
@@ -153,6 +157,13 @@ function Chat() {
                   )}
                 </div>
                 <span>{currentFd.name || "Unknow"}</span>
+
+                </div>
+                <div onClick={()=> setShow(!show)} className="w-[35px] hidden md:flex cursor-pointer h-[35px] rounded-md justify-center items-center bg-purple-500 text-white " >
+                  <FaList/>
+                </div>
+
+
               </div>
 
               <div className="h-[400px] w-full bg-slate-100 p-3 rounded-md ">
@@ -232,7 +243,7 @@ function Chat() {
               </div>
             </div>
           ) : (
-            <div className="w-full h-full flex justify-center items-center text-lg text-slate-600 ">
+            <div onClick={()=> setShow(true)} className="w-full h-[400px] flex justify-center items-center text-lg text-slate-600 ">
               <span>Select selller </span>
             </div>
           )}

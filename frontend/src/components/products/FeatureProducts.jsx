@@ -72,7 +72,7 @@ function FeatureProducts({products}) {
 
       <div className="w-full grid grid-cols-4 md:grid-cols-2 xs:grid-cols-1 gap-6 ">
         {products.map((p, i) => (
-          <div key={i} className="border rounded-md group  transition-all duration-500 hover:shadow-md hover:-mt-3 ">
+          <div key={i} className="border border-slate-100 rounded-md group  transition-all duration-500 hover:shadow-md hover:-mt-3 ">
             <div className="relative overflow-hidden">
               {
                 p.discount ? <div className="flex justify-center items-center absolute text-white w-[38px] h-[38px] rounded-full bg-red-500 font-semibold text-xs left-2 top-2 ">

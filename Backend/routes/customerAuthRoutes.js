@@ -8,7 +8,7 @@ const customerAuthRoutes = Router();
 
 customerAuthRoutes.post('/customerRegister' , customerAuthController.customerRegister)
 customerAuthRoutes.post('/customerLogin' , customerAuthController.customerLogin)
-
+customerAuthRoutes.get('/logout' , customerAuthController.customerLogout)
 
 
 

@@ -3,6 +3,8 @@ import customerOrder from "../models/customerOrder.js";
 import authOrder from "../models/authOrder.js";
 import cardModel from "../models/cardModel.js";
 import mongoose from "mongoose";
+import Stripe from "stripe";
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 class orderController {
   paymentCheck = async (id) => {
@@ -318,6 +320,25 @@ class orderController {
     }
   };
 
+  createPayment = async (req, res) => {
+   const { price } = req.body;
+
+  try {
+    const payment = await stripe.paymentIntents.create({
+      amount: Math.round(price * 100), // amount in paisa
+      currency: "inr", // ✅ INR for Indian Rupees
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+
+    return res.status(200).json({ clientSecret: payment.client_secret  });
+
+  } catch (error) {
+    console.error("Stripe error:", error);
+    res.status(500).json({ error: "Payment failed" });
+  }
+}
 
 
 

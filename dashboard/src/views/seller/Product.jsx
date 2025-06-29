@@ -3,10 +3,11 @@ import Search from "../components/Search";
 import { Link } from "react-router-dom";
 import logo from "../../assets/image/logo.png";
 import Pagination from "../Pagination";
-import { FaEdit, FaImage, FaEye } from "react-icons/fa";
+import { FaEdit, FaImage, FaEye  } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { getProduct, messageClear } from "../../store/Reducers/productReducer.js";
+import { GiKnightBanner } from "react-icons/gi";
 
 function Product() {
 
@@ -167,8 +168,12 @@ function Product() {
                         <FaEye />
                       </Link>
                       <Link className="p-[6px]  bg-red-500  rounded hover:shadow-lg hover text-[#6f6f70] ">
-                        {" "}
+                         
                         <RiDeleteBin6Line />
+                      </Link>
+                      <Link to={`/seller/dashboard/addBanner/${d._id}`}  className="p-[6px]  bg-cyan-500  rounded hover:shadow-lg hover text-[#6f6f70] ">
+                         
+                       <GiKnightBanner />
                       </Link>
                     </div>
                   </td>

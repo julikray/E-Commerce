@@ -145,7 +145,7 @@ class homeController {
   // }
 
   queryProducts = async (req, res) => {
-  const parPage = 1;
+  const parPage = parseInt(req.query.perPage) || 6; 
   req.query.parPage = parPage;
   console.log(req.query)
 

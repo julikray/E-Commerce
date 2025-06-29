@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoIosArrowDown, IoIosCall, IoMdMail } from "react-icons/io";
 import { FaFacebookF, FaHeart, FaList, FaUser } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
@@ -7,19 +7,25 @@ import { FaGithub } from "react-icons/fa6";
 import { BsCartFill } from "react-icons/bs";
 import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/image/logo.png";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getCardProducts,
+  getWishlistProducts,
+} from "../store/reducers/cardReducer";
 
 function Headers() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { categorys } = useSelector((state) => state.home);
   const { userInfo } = useSelector((state) => state.auth);
-  const { cardProductsCount } = useSelector((state) => state.card);
+  const { cardProductsCount, wishlistCount } = useSelector(
+    (state) => state.card
+  );
 
   const { pathname } = useLocation();
   const [showSidebar, setShowSidebar] = useState(true);
   const [category, setCategory] = useState(true);
-  const user = false;
-  const wishlistCount = 5;
+
   const [searchValue, setSearchValue] = useState("");
 
   const search = () => {
@@ -33,6 +39,13 @@ function Headers() {
       navigate("/login");
     }
   };
+
+  useEffect(() => {
+    if (userInfo) {
+      dispatch(getCardProducts(userInfo.id));
+      dispatch(getWishlistProducts(userInfo.id));
+    }
+  }, [userInfo]);
 
   return (
     <div className="w-full ">
@@ -130,7 +143,7 @@ function Headers() {
                     <Link
                       to="/shops"
                       className={`p-2 block ${
-                        pathname === "/shop"
+                        pathname === "/shops"
                           ? "text-[#836bca]"
                           : "text-[#6f6f70]"
                       } `}
@@ -141,6 +154,7 @@ function Headers() {
 
                   <li>
                     <Link
+                    to="/blog"
                       className={`p-2 block ${
                         pathname === "/blog"
                           ? "text-[#836bca]"
@@ -153,6 +167,7 @@ function Headers() {
 
                   <li>
                     <Link
+                  to="/about"
                       className={`p-2 block ${
                         pathname === "/about"
                           ? "text-[#836bca]"
@@ -165,6 +180,7 @@ function Headers() {
 
                   <li>
                     <Link
+                    to="/contact"
                       className={`p-2 block ${
                         pathname === "/contact"
                           ? "text-[#836bca]"
@@ -178,14 +194,16 @@ function Headers() {
 
                 <div className="flex md-lg:hidden justify-center items-center gap-5 ">
                   <div className="flex justify-center gap-5 ">
-                    <div className="relative flex justify-center items-center cursor-pointer w-[35px] h-[35px] rounded-full bg-[#EEEEEF]">
+                    <div onClick={()=>navigate(userInfo ? '/dashboard/myWishlist' : '/login' )} className="relative flex justify-center items-center cursor-pointer w-[35px] h-[35px] rounded-full bg-[#EEEEEF]">
                       <span className="text-xl text-[#6f6f70]">
                         <FaHeart />
                       </span>
 
-                      <div className="w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px]">
-                        {wishlistCount}
-                      </div>
+                      {wishlistCount !== 0 && (
+                        <div className="w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px]">
+                          {wishlistCount}
+                        </div>
+                      )}
                     </div>
 
                     <div
@@ -252,6 +270,7 @@ function Headers() {
             <ul className="flex flex-col justify-start mt-5 gap-8 text-sm font-bold uppercase  ">
               <li>
                 <Link
+                to="/"
                   className={`py-2 block ${
                     pathname === "/" ? "text-[#836bca] " : "text-[#6f6f70]"
                   } `}
@@ -262,8 +281,9 @@ function Headers() {
 
               <li>
                 <Link
+                to="/shops"
                   className={`py-2 block ${
-                    pathname === "/shop" ? "text-[#836bca]" : "text-[#6f6f70]"
+                    pathname === "/shops" ? "text-[#836bca]" : "text-[#6f6f70]"
                   } `}
                 >
                   Shop
@@ -272,6 +292,7 @@ function Headers() {
 
               <li>
                 <Link
+                to="/blog"
                   className={`py-2 block ${
                     pathname === "/blog" ? "text-[#836bca]" : "text-[#6f6f70]"
                   } `}
@@ -282,6 +303,7 @@ function Headers() {
 
               <li>
                 <Link
+                to="/about"
                   className={`py-2 block ${
                     pathname === "/about" ? "text-[#836bca]" : "text-[#6f6f70]"
                   } `}
@@ -292,6 +314,7 @@ function Headers() {
 
               <li>
                 <Link
+                to="/contact"
                   className={`py-2 block ${
                     pathname === "/contact"
                       ? "text-[#836bca]"
@@ -394,20 +417,19 @@ function Headers() {
                   </button>
                 </div>
               </div>
-              <div className="w-4/12 block md-lg:hidden pl-2 md-lg:w-full md-lg:pl-0" >
-              <div className="w-full flex justify-end gap-3  md-lg:justify-start items-center" >
-                <div className="w-[48px] h-[48px] rounded-full flex bg-[#f5f5f5] justify-center items-center  " >
-                  <span><IoIosCall/> </span>
+              <div className="w-4/12 block md-lg:hidden pl-2 md-lg:w-full md-lg:pl-0">
+                <div className="w-full flex justify-end gap-3  md-lg:justify-start items-center">
+                  <div className="w-[48px] h-[48px] rounded-full flex bg-[#f5f5f5] justify-center items-center  ">
+                    <span>
+                      <IoIosCall /> 
+                    </span>
+                  </div>
 
+                  <div className="flex justify-end flex-col gap-1 ">
+                    <h2 className="text-md font-medium">+4384763065</h2>
+                    <span className="text-xs">customer support</span>
+                  </div>
                 </div>
-
-                <div className="flex justify-end flex-col gap-1 " >
-                  <h2 className="text-md font-medium" >+4384763065</h2>
-                  <span className="text-xs" >asdlfjh time</span>
-                </div>
-
-              </div>
-                 
               </div>
             </div>
           </div>

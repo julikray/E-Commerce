@@ -112,6 +112,22 @@ export const getCustomerReview = createAsyncThunk(
 );
 
 
+export const getHomeBanner = createAsyncThunk(
+  "product/getHomeBanner",
+  async (_, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.get('/getHomeBanner');
+
+      console.log(data);
+      return fulfillWithValue(data);
+    } catch (error) {
+      console.log(error.response);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
 
 export const homeReducer = createSlice({
   name: "home",
@@ -134,7 +150,8 @@ export const homeReducer = createSlice({
     errorMessage: '',
     reviews: [] , 
     totalReview: 0 , 
-    ratingReview: []
+    ratingReview: [],
+    banners: []
   },
   reducers: {
     clearMessages : (state, _) => {
@@ -193,6 +210,11 @@ export const homeReducer = createSlice({
         state.reviews = action.payload.reviews 
         state.totalReview = action.payload.totalReview 
         state.ratingReview = action.payload.ratingReview 
+      })
+
+      .addCase(getHomeBanner.fulfilled, (state, action) => {
+        state.banners = action.payload.banners 
+        
       })
 
 

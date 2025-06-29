@@ -10,6 +10,9 @@ const paymentRoutes = Router();
 
 paymentRoutes.get('/payment/createStripeConnectAccount' , authMiddleware , paymentController.createStripeConnectAccount )
 
+paymentRoutes.put('/payment/activeStripeConnectAccount/:activeCode' , authMiddleware , paymentController.activeStripeConnectAccount )
+
+
 
  
 

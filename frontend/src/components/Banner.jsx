@@ -2,13 +2,14 @@ import React from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getHomeBanner } from "../store/reducers/homeReducer";
 
-import img1 from "../assets/image/banner/1.jpg";
-import img2 from "../assets/image/banner/2.jpg";
-import img3 from "../assets/image/banner/3.jpg";
 
 
 const responsive = {
+
   superLargeDesktop: {
     breakpoint: { max: 4000, min: 3000 },
     items: 1,
@@ -27,15 +28,22 @@ const responsive = {
   },
 };
 
-const bannerImages = [img1, img2, img3];
+
 
 function Banner() {
+  const dispatch = useDispatch()
+    const {   banners } = useSelector(
+      (state) => state.home
+    );
+  useEffect(()=>{
+   dispatch(getHomeBanner())
+  },[])
   return (
-    <div className="w-full md-lg:mt-6">
+    <div className="w-full md-lg:mt-6  ">
       <div className="w-[85%] lg:w-[90%] mx-auto">
         <div className="w-full flex flex-wrap md-lg:gap-8">
-          <div className="w-full">
-            <div className="my-8">
+          <div className="w-full ">
+            <div className="my-8  ">
               <Carousel
                 autoPlay={true}
                 infinite={true}
@@ -43,12 +51,13 @@ function Banner() {
                 showDots={true}
                 responsive={responsive}
               >
-                  {bannerImages.map((image, i) => (
-                  <Link className="lg-md:h-[440px] h-auto w-full block "  key={i} to="#">
+                  {
+                  banners.length > 0 && banners.map((b, i) => (
+                  <Link className="lg-md:h-[440px] h-[470px]  w-full block "  key={i} to={`/product/details/${b.link}`}>
                     <img
-                      src={image}  
-                      alt={`banner-${i}`}
-                      className="w-full h-auto object-cover"
+                      src={b.banner}  
+                      alt='banner image'
+                      className="w-full h-full rounded-md object-fill"
                     />
                   </Link>
                 ))}

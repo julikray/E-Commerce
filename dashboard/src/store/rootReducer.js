@@ -5,6 +5,7 @@ import   productReducer   from './Reducers/productReducer.js';
 import sellerReducer from './Reducers/sellerReducer.js';
 import  orderReducer from './Reducers/orderReducer.js';
 import chatReducer from './Reducers/chatReducer.js';
+import bannerReducer from './Reducers/bannerReducer.js';
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
     seller : sellerReducer,
     order: orderReducer,
     chat : chatReducer,
+    banner : bannerReducer
 });
 
 export default rootReducer;

@@ -77,7 +77,7 @@ function SearchProducts() {
   return (
     <div>
       <Headers />
-      <section className="bg-[url(../../assets/image/banner/1.jpg )] h-[220px] mt-6 bg-cover bg-no-repeat relative bg-left ">
+      {/* <section className="bg-[url(../../assets/image/banner/1.jpg )] h-[220px] mt-6 bg-cover bg-no-repeat relative bg-left ">
         <div className="absolute left-0 top-0 w-full h-full bg-[#2422228a] ">
           <div className="w-[85%] md:w-[80%] sm:w-[90%] lg:w-[90%] h-full mx-auto ">
             <div className="flex flex-col justify-center gap-1 items-center h-full w-full text-white ">
@@ -92,7 +92,7 @@ function SearchProducts() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="py-16">
         <div className="w-[85%] md:w-[90%] sm:w-[90%] lg:w-[90%] h-full mx-auto ">

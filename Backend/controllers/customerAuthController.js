@@ -4,7 +4,6 @@ import tokenCreate from "../middleware/tokenCreate.js";
 import SellerCustomerModel from "../models/chat/sellerCustomerModel.js";
 
 class customerAuthController {
-    
   async customerRegister(req, res) {
     const { email, name, password } = req.body;
     try {
@@ -19,9 +18,9 @@ class customerAuthController {
           method: "manually",
         });
 
-         await SellerCustomerModel.create({
-                  myId: createCustomer.id,
-                });
+        await SellerCustomerModel.create({
+          myId: createCustomer.id,
+        });
 
         const token = await tokenCreate({
           id: createCustomer.id,
@@ -34,13 +33,11 @@ class customerAuthController {
         });
 
         console.log(req.body);
-        return res
-          .status(201)
-          .json({
-            token,
-            message: "Registered successfully.",
-            createCustomer,
-          });
+        return res.status(201).json({
+          token,
+          message: "Registered successfully.",
+          createCustomer,
+        });
       }
     } catch (error) {
       console.log(error);
@@ -48,21 +45,22 @@ class customerAuthController {
     }
   }
 
-
-   async customerLogin(req, res) {
-    const {  email, password } = req.body;
+  async customerLogin(req, res) {
+    const { email, password } = req.body;
     try {
-      const customer = await customerModel.findOne({ email }).select("+password");
+      const customer = await customerModel
+        .findOne({ email })
+        .select("+password");
       if (customer) {
-       const match = await bcrypt.compare(password, customer.password);
+        const match = await bcrypt.compare(password, customer.password);
         console.log(match);
 
         if (match) {
           const token = await tokenCreate({
-           id: customer.id,
-          name: customer.name,
-          email: customer.email,
-          method: customer.method,
+            id: customer.id,
+            name: customer.name,
+            email: customer.email,
+            method: customer.method,
           });
 
           res.cookie("accessToken", token, {
@@ -81,8 +79,19 @@ class customerAuthController {
     }
   }
 
+  async customerLogout(req, res) {
+    try {
+      res.cookie("customerToken", "", {
+        expires: new Date(Date.now()),
+        httpOnly: true,
+      });
 
-  
+      return res.status(200).json({ message: "logout success" });
+    } catch (error) {
+      console.log({ error });
+      return res.status(500).send("Internal Server Error");
+    }
+  }
 }
 
 export default new customerAuthController();

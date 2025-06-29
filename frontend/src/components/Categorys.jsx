@@ -49,7 +49,7 @@ function Categorys() {
       >
         {categorys.map((c, i) => (
           <Link
-            className="h-[185px] border rounded-md block mx-1  "
+            className="h-[185px] rounded-md block mx-1  "
             key={i}
             to="#"
           >

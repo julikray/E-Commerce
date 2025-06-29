@@ -11,6 +11,7 @@ orderRoutes.get('/customer/getDashboardIndexData/:userId' , orderController.getD
 orderRoutes.get('/customer/getOrder/:customerId/:status' , orderController.getOrder )
 orderRoutes.get('/customer/getOrder/:customerId/:status' , orderController.getOrder )
 orderRoutes.get('/customer/getOrders/:orderId' , orderController.getOrders )
+orderRoutes.post('/createPayment' , orderController.createPayment )
 
 //admin routes 
 orderRoutes.get('/admin/getAdminOrders' , orderController.getAdminOrders )
