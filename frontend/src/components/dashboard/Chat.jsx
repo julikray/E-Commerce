@@ -18,7 +18,7 @@ import { toast } from "react-toastify";
 import { useRef } from "react";
 import { FaList } from "react-icons/fa";
 
-export const socket = io("http://localhost:4000", {
+export const socket = io(import.meta.env.VITE_BACKEND_URL, {
   withCredentials: true,
 });
 
