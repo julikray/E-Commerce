@@ -25,6 +25,9 @@ class AuthController {
           });
 
           res.cookie("accessToken", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "None",
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
           });
           return res.status(200).json({ token, message: "Login success." });
@@ -96,6 +99,10 @@ class AuthController {
           });
 
           res.cookie("accessToken", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "None",
+
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
           });
           return res.status(200).json({ token, message: "Login success." });
@@ -206,28 +213,19 @@ class AuthController {
     }
   }
 
-
-  async logout(req, res) {    
-    
+  async logout(req, res) {
     try {
-      res.cookie('accessToken', null , {
+      res.cookie("accessToken", null, {
         expires: new Date(Date.now()),
-        httpOnly: true
-      } )
+        httpOnly: true,
+      });
 
-       return res
-        .status(200)
-        .json({ message: "logout success" });
-
-      
+      return res.status(200).json({ message: "logout success" });
     } catch (error) {
-       console.log(error);
+      console.log(error);
       return res.status(500).send("Internal Server Error");
-      
     }
-
   }
-
 }
 
 export default new AuthController();

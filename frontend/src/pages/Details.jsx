@@ -466,7 +466,7 @@ function Details() {
                           <img
                             src={p.images[0]}
                             alt="images"
-                            className="h-full w-full rounded-md  "
+                            className="h-full w-full  rounded-md  "
                           />
                           <div className="absolute h-full w-full top-0 left-0 bg-[#000] opacity-25 hover:opacity-50 transition-all duration-500 "></div>
                         </div>
