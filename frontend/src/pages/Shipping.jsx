@@ -76,8 +76,8 @@ function Shipping() {
         </div>
       </section> */}
 
-      <section className="bg-[#eeeeee] ">
-        <div className="w-[85%] lg:w-[90%] md:w-[90%] sm:w-[90%] mx-auto py-16 ">
+      <section className="bg-slate-200 mt-5 ">
+        <div className="w-[85%] lg:w-[90%] md:w-[90%] sm:w-[90%] mx-auto py-7 ">
           <div className="w-full flex flex-wrap ">
             <div className="w-[67%] md-lg:w-full ">
               <div className="flex flex-col gap-3 ">
@@ -87,7 +87,7 @@ function Shipping() {
                    <h2 className="text-slate-600 font-bold pb-3 ">
                     Shipping Information
                   </h2>
-                  <form onSubmit={save} >
+                  <form onSubmit={save}  >
                     <div className="flex md:flex-col md:gap-2 w-full gap-5 text-slate-600 ">
                       <div className="flex flex-col gap-1 mb-2 w-full ">
                         <label htmlFor="name">Name</label>
@@ -173,7 +173,7 @@ function Shipping() {
                  {
 
                   res && 
-                  <div className="flex flex-col gap-1 " >
+                  <div className="flex flex-col gap-1 rounded-md  " >
                     <h2 className="text-slate-600 font-semibold pb-2 " >Deliver to {states.name} </h2>
                     <p>
                       <span className="bg-blue-200 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded  " >Home</span>
@@ -197,7 +197,7 @@ function Shipping() {
                 </div>
 
                  {products.map((p, i) => (
-                      <div key={i} className="flex bg-white p-4 flex-col gap-2 ">
+                      <div key={i} className="flex bg-white p-4 flex-col gap-2 rounded-md ">
                         <div className="flex justify-start items-center">
                           <h2 className="text-md text-slate-600 ">
                              {p.shopName}
@@ -241,9 +241,9 @@ function Shipping() {
               </div>
             </div>
 
-            <div className="w-[33%] md-lg:w-full " >
+            <div className="w-[33%] md-lg:w-full  " >
               <div className="pl-3 md-lg:pl-0 " >
-                <div className="bg-white font-medium p-5 text-slate-600 flex flex-col gap-3 " >
+                <div className="bg-white font-medium p-5 text-slate-600 flex flex-col gap-3 rounded-md " >
                   <h2 className="text-xl font-semibold " >Order Summary</h2>
                   <div className="flex justify-between items-center" >
                     <span>Items Total</span>

@@ -208,14 +208,14 @@ function Details() {
         <div className="w-[85%] md:w-[80%] sm:w-[90%] lg:w-[90%] h-full mx-auto pb-16 ">
           <div className="grid grid-cols-2 md-lg:grid-cols-1 gap-8 ">
             <div>
-              <div className="p-5 border">
+              <div className="p-5 border rounded-md ">
                 <img
-                  className="h-[500px] w-full "
+                  className="h-[500px] w-full rounded-md  "
                   src={image ? image : product.images?.[0]}
                   alt=""
                 />
               </div>
-              <div className="py-3">
+              <div className="py-3 ">
                 {product.images && (
                   <Carousel
                     autoPlay={true}
@@ -224,11 +224,11 @@ function Details() {
                     transitionDuration={500}
                   >
                     {product.images.map((img, i) => (
-                      <div key={i} className="px-1">
+                      <div key={i} className="px-1 ">
                         <img
                           src={img}
                           alt={`Product ${i + 1}`}
-                          className="h-[100px] w-[100px] object-cover cursor-pointer"
+                          className="h-[100px] w-[100px] object-cover cursor-pointer rounded-md "
                           onClick={() => setImage(img)}
                         />
                       </div>
@@ -248,7 +248,7 @@ function Details() {
                 </div>
                 <span className="text-green-500 ">23 reviews </span>
               </div>
-              <div className="text-2xl text-red-500 font-bold flex gap-3 ">
+              <div className="text-2xl text-red-400 font-bold flex gap-3 ">
                 {product.discount !== 0  ? (
                   <>
                     <h2 className="line-through ">Rs {product.price} </h2>
@@ -261,13 +261,13 @@ function Details() {
                   <h2>Price : Rs {product.price} </h2>
                 )}
               </div>
-              <div className="text-slate-600 ">
+              <div className="text-slate-600  ">
                 <p>{product.description}</p>
               </div>
-              <div className="flex gap-3 pb-10 border-b ">
+              <div className="flex gap-3 pb-10 border-b  ">
                 {product.stock ? (
                   <>
-                    <div className="flex bg-slate-200 h-[50px] justify-center items-center text-xl ">
+                    <div className="flex bg-slate-200 h-[50px] justify-center items-center text-xl rounded-md ">
                       <div onClick={dec} className="px-6 cursor-pointer">
                         -
                       </div>
@@ -279,7 +279,7 @@ function Details() {
                     <div>
                       <button
                         onClick={addCard}
-                        className="px-8 py-3 h-[50px] cursor-pointer hover:shadow-lg hover:shadow-purple-500/40 bg-purple-500 text-white "
+                        className="px-8 py-3 h-[50px] cursor-pointer hover:shadow-lg hover:shadow-grey-500/40 border border-[#cfcfcf] shadow-sm   text-[#6f6f70] rounded-md"
                       >
                         Add To Card
                       </button>
@@ -290,7 +290,7 @@ function Details() {
                 )}
 
                 <div>
-                  <div onClick={addWishlist} className="h-[50px] w-[50px] flex justify-center items-center cursor-pointer bg-red-500 text-red-100 ">
+                  <div onClick={addWishlist} className="h-[50px] w-[50px] flex justify-center items-center cursor-pointer bg-red-500 text-red-100 rounded-md ">
                     <FaHeart />
                   </div>
                 </div>
@@ -313,7 +313,7 @@ function Details() {
                   <ul className="flex justify-start items-center gap-3 ">
                     <li>
                       <a
-                        className="w-[38px] h-[38px] hover:bg-[#7fad39] hover:text-white flex justify-center items-center rounded-full bg-purple-500 "
+                        className="w-[38px] h-[38px] hover:bg-[#7fad39] hover:text-white flex justify-center items-center rounded-full  border border-[#cfcfcf] text-[#282856] "
                         href="#"
                       >
                         <FaFacebookF /> 
@@ -321,7 +321,7 @@ function Details() {
                     </li>
                     <li>
                       <a
-                        className="w-[38px] h-[38px] hover:bg-[#7fad39] hover:text-white flex justify-center items-center rounded-full bg-purple-500 "
+                        className="w-[38px] h-[38px] hover:bg-[#7fad39] hover:text-white flex justify-center items-center rounded-full border border-[#cfcfcf] text-[#282856] "
                         href="#"
                       >
                         <FaLinkedin /> 
@@ -329,7 +329,7 @@ function Details() {
                     </li>
                     <li>
                       <a
-                        className="w-[38px] h-[38px] hover:bg-[#7fad39] hover:text-white flex justify-center items-center rounded-full bg-purple-500 "
+                        className="w-[38px] h-[38px] hover:bg-[#7fad39] hover:text-white flex justify-center items-center rounded-full border border-[#cfcfcf] text-[#282856] "
                         href="#"
                       >
                         <FaTwitter /> 
@@ -341,14 +341,14 @@ function Details() {
 
               <div className="flex gap-3">
                 {product.stock ? (
-                  <button onClick={buy} className="px-8 py-3 h-[50px] cursor-pointer hover:shadow-lg hover:shadow-emerald-500/40 bg-emerald-500 text-white ">
+                  <button onClick={buy} className="px-8 py-3 h-[50px] cursor-pointer hover:shadow-lg  block hover:shadow-grey-500/40 border border-[#cfcfcf] shadow-sm  text-[#282856] rounded-md ">
                     Buy Now
                   </button>
                 ) : (
                   ""
                 )}
-                <Link to={`/dashboard/chat/${product.sellerId}`} className="px-8 py-3 h-[50px] cursor-pointer hover:shadow-lg hover:shadow-emerald-500/40 bg-lime-500 text-white block ">
-                  Chat Seller
+                <Link to={`/dashboard/chat/${product.sellerId}`} className="px-8 py-3 h-[50px] cursor-pointer hover:shadow-lg   block  hover:shadow-grey-500/40 border border-[#cfcfcf] shadow-sm  text-[#282856] rounded-md ">
+                  Chat With Seller
                 </Link>
               </div>
             </div>
@@ -396,10 +396,10 @@ function Details() {
 
             <div className="w-[28%] md-lg:w-full ">
               <div className="pl-4 md-lg:pl-0 ">
-                <div className="px-3 py-2 text-slate-600 bg-slate-200 ">
+                <div className="px-3 py-2 text-slate-600 bg-slate-200 rounded-md">
                   <h2>From {product.shopName} </h2>
                 </div>
-                <div className="flex flex-col gap-2 mt-3 border p-3 ">
+                <div className="flex flex-col gap-2 mt-3 border p-3 rounded-md ">
                   {moreProducts.map((p, i) => {
                     return (
                       <Link className="block">
@@ -407,7 +407,7 @@ function Details() {
                           <img
                             src={p.images[0]}
                             alt="images"
-                            className="h-full w-full object-cover  "
+                            className="h-full w-full object-cover rounded-md "
                           />
                           {p.discount !== 0 && (
                             <div className="flex justify-center items-center absolute text-white w-[38px] h-[38px] rounded-full bg-red-500 font-semibold text-xs left-2 top-2 ">
@@ -435,7 +435,7 @@ function Details() {
       </section>
 
       <section>
-        <div className="w-[85%] md:w-[80%] sm:w-[90%] lg:w-[90%] h-full mx-auto pb-16 ">
+        <div className="w-[85%] md:w-[80%] sm:w-[90%] lg:w-[90%] h-full mx-auto pb-1 ">
           <h2 className="text-2xl py-8 text-slate-600 ">Related Products</h2>
           <div>
             <Swiper
@@ -462,11 +462,11 @@ function Details() {
                   <SwiperSlide key={i}>
                     <Link className="block">
                       <div key={i} className="relative h-[270px] ">
-                        <div className="w-full h-full ">
+                        <div className="w-full h-full  ">
                           <img
                             src={p.images[0]}
                             alt="images"
-                            className="h-full w-full object-cover  "
+                            className="h-full w-full rounded-md  "
                           />
                           <div className="absolute h-full w-full top-0 left-0 bg-[#000] opacity-25 hover:opacity-50 transition-all duration-500 "></div>
                         </div>

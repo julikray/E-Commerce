@@ -42,7 +42,7 @@ function Wishlist() {
 
             <img
               className="sm:h-full w-full h-[240px] object-contain  "
-              src={p.images}
+              src={p.images[0]}
               alt="Product image"
             />
 

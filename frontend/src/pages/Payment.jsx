@@ -13,7 +13,7 @@ function Payment() {
   return (
     <div>
       <Headers />
-      <section className="bg-[#eeeeee] ">
+      <section className="bg-slate-200 ">
         <div className="w-[85%] lg:w-[90%] md:w-[90%] sm:w-[90%] mx-auto py-16 mt-4 ">
           <div className="flex flex-wrap md:flex-col ">
             <div className="w-7/12 md:w-full">
