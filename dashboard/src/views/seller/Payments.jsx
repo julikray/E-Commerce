@@ -1,6 +1,10 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useEffect } from "react";
 import { FixedSizeList as List } from 'react-window';
 import {  FaRupeeSign } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { getSellerPaymentDetails, messageClear, sendWithdrawalRequest } from "../../store/Reducers/paymentReducer";
+import { useState } from "react";
+import toast from "react-hot-toast";
  
 
 function handleOnWheel({deltaY}) {
@@ -13,7 +17,44 @@ const outerElementType = forwardRef((props , ref) => (
 
 function Payments() {
 
-    const array = [1,2,3,4,5,6,7,8]
+ 
+  const [amount , setAmount] = useState(0)
+   const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.auth);
+  const { successMessage,
+    errorMessage,
+    loader,
+    pendingWithDrawal,
+    successWithDrawal,
+    totalAmount,
+    withDrawalAmount,
+    pendingAmount,
+    availableAmount } = useSelector((state) => state.payment)
+
+    useEffect(()=>{
+      dispatch(getSellerPaymentDetails(userInfo._id))
+    },[])
+
+    const sendRequest = (e) => {
+      e.preventDefault()
+
+      dispatch(sendWithdrawalRequest({amount , sellerId: userInfo._id }))
+    }
+
+     useEffect(() => {
+      if (successMessage) {
+        toast.success(successMessage);
+        dispatch(messageClear());
+      }
+    
+      if (errorMessage) {
+        toast.error(errorMessage);
+        dispatch(messageClear());
+      }
+    }, [successMessage, errorMessage]);
+
+
+ 
     const Row = ({index , style}) => {
         return (
             <div style={style} className="flex text-sm text-[#6f6f70]" >
@@ -38,7 +79,7 @@ function Payments() {
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-7 mb-5 ">
         <div className="flex justify-between items-center p-5 bg-[#fefeff] rounded-md gap-3 ">
           <div className="flex flex-col justify-start items-start text-[#5c5a5a] ">
-            <h2 className="text-3xl font-bold ">₹ 7778</h2>
+            <h2 className="text-3xl font-bold ">₹ {totalAmount} </h2>
             <span className="text-md font-bold ">Total Salse</span>
           </div>
 
@@ -49,7 +90,7 @@ function Payments() {
 
         <div className="flex justify-between items-center p-5 bg-[#fefeff] rounded-md gap-3 ">
           <div className="flex flex-col justify-start items-start text-[#5c5a5a] ">
-            <h2 className="text-3xl font-bold ">₹ 20</h2>
+            <h2 className="text-3xl font-bold ">₹ {availableAmount}</h2>
             <span className="text-md font-bold ">Available Amount</span>
           </div>
 
@@ -60,7 +101,7 @@ function Payments() {
 
         <div className="flex justify-between items-center p-5 bg-[#fefeff] rounded-md gap-3 ">
           <div className="flex flex-col justify-start items-start text-[#5c5a5a] ">
-            <h2 className="text-3xl font-bold ">₹ 50</h2>
+            <h2 className="text-3xl font-bold ">₹ {withDrawalAmount} </h2>
             <span className="text-md font-bold ">WithDrawal Amount</span>
           </div>
 
@@ -71,7 +112,7 @@ function Payments() {
 
         <div className="flex justify-between items-center p-5 bg-[#fefeff] rounded-md gap-3 ">
           <div className="flex flex-col justify-start items-start text-[#5c5a5a] ">
-            <h2 className="text-3xl font-bold ">₹ 0</h2>
+            <h2 className="text-3xl font-bold ">₹ {pendingAmount} </h2>
             <span className="text-md font-bold ">Pending Amount</span>
           </div>
 
@@ -83,26 +124,28 @@ function Payments() {
 
       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-2 pb-4 ">
         <div className=" bg-[#fefeff] p-4 rounded-md border border-[#d2d3d2">
-          <h2 className="text-lg">Send Request</h2>
+          <h2 className="text-lg">Send Withdrawal Request</h2>
           <div className="pt-5 mb-5">
-            <form>
+            <form onSubmit={sendRequest} >
               <div className="flex gap-3 flex-nowrap ">
                 <input
+                onChange={(e) => setAmount(e.target.value)}
+                required value={amount}
                   min="0"
                   type="number"
                   className="px-4 py-2 md:w-[79%] focus:border-[#ae88f1] outline-none bg-[#eeefee]  border border-slate-700 rounded-md text-[#6f6f70] "
                   name="amount"
                 />
 
-                <button className="bg-red-500  hover:shadow-red-500/40 hover:shadow-md text-white rounded-md px-7 py-2 my-2 ">
-                  Submit
+                <button disabled={loader} className="bg-red-500  hover:shadow-red-500/40 hover:shadow-md text-white rounded-md px-7 py-2 my-2 ">
+                 {loader ? 'loading..' : 'Submit'}
                 </button>
               </div>
             </form>
           </div>
 
           <div>
-            <h2 className="text-lg pb-4 " >Pending Request</h2>
+            <h2 className="text-lg pb-4 " >Pending Withdrawal Request</h2>
 
             <div className="w-full overflow-x-auto" >
                             <div className="flex text-[#6f6f70] border-b border-[#d2d3d2] uppercase text-xs font-bold min-w-[340px] rounded-md " >
@@ -118,7 +161,8 @@ function Payments() {
                                  <List style={{minWidth : '340px'}}
                                  className="List"
                                  height={350}
-                                 itemCount={100}
+                                //  itemCount={pendingWithDrawal.length}
+                                  itemCount={Array.isArray(pendingWithDrawal) ? pendingWithDrawal.length : 0}
                                  itemSize={35}
                                  outerElementType={outerElementType}
                                  

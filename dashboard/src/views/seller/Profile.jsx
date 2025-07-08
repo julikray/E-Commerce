@@ -7,26 +7,30 @@ import {
   messageClear,
   profile_image_upload,
   profileInfoAdd,
+  sellerChangePassword,
 } from "../../store/Reducers/authReducer";
 import toast from "react-hot-toast";
 import { PropagateLoader } from "react-spinners";
 import { createStripeConnectAccount } from "../../store/Reducers/sellerReducer";
 
 function Profile() {
+  const [passwordData, setPasswordData] = useState({
+    email: "",
+    oldPassword: "",
+    newPassword: "",
+  });
+
   const [state, setState] = useState({
     division: "",
     district: "",
     shopName: "",
-    sub_district: "",
   });
 
   const dispatch = useDispatch();
 
-  const { userInfo, loader, successMessage } = useSelector(
+  const { userInfo, loader, successMessage ,errorMessage} = useSelector(
     (state) => state.auth
   );
-
- 
 
   const add_image = (e) => {
     if (e.target.files.length > 0) {
@@ -44,17 +48,17 @@ function Profile() {
     });
   };
 
-  const add =(e) =>{
-    e.preventDefault()
-    dispatch(profileInfoAdd(state))
-  }
+  const add = (e) => {
+    e.preventDefault();
+    dispatch(profileInfoAdd(state));
+  };
 
-  useEffect(() => {
-    if (successMessage) {
-      toast.success(successMessage);
-      messageClear();
-    }
-  }, [successMessage]);
+  // useEffect(() => {
+  //   if (successMessage) {
+  //     toast.success(successMessage);
+  //     messageClear();
+  //   }
+  // }, [successMessage]);
 
   const overrideStyle = {
     display: "flex",
@@ -63,6 +67,32 @@ function Profile() {
     justifyContent: "center",
     alignItem: "center",
   };
+
+  const handlePasswordChange = (e) => {
+    setPasswordData({
+      ...passwordData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const submitPasswordChange = (e) => {
+    e.preventDefault();
+    dispatch(sellerChangePassword(passwordData));
+  };
+
+
+  useEffect(() => {
+  if (successMessage) {
+    toast.success(successMessage);
+    dispatch(messageClear());
+  }
+
+  if (errorMessage) {
+    toast.error(errorMessage);
+    dispatch(messageClear());
+  }
+}, [successMessage, errorMessage]);
+
 
   return (
     <div className="px-2 lg:px-7 py-5 ">
@@ -148,7 +178,10 @@ function Profile() {
                         {userInfo.payment}
                       </span>
                     ) : (
-                      <span onClick={() => dispatch(createStripeConnectAccount())} className="bg-blue-500 text-white text-xs cursor-pointer font-normal ml-2 px-2 py-0.5 rounded ">
+                      <span
+                        onClick={() => dispatch(createStripeConnectAccount())}
+                        className="bg-blue-500 text-white text-xs cursor-pointer font-normal ml-2 px-2 py-0.5 rounded "
+                      >
                         Click Active
                       </span>
                     )}
@@ -159,7 +192,7 @@ function Profile() {
 
             <div className="px-0 md:px-5 py-2 ">
               {!userInfo?.shopInfo ? (
-                <form onSubmit={add} >
+                <form onSubmit={add}>
                   <div className="flex flex-col w-full gap-1 mb-2">
                     <label htmlFor="Shop">Shop Name</label>
                     <input
@@ -199,19 +232,6 @@ function Profile() {
                     />
                   </div>
 
-                  <div className="flex flex-col w-full gap-1 mb-4">
-                    <label htmlFor="subdis">Sub District </label>
-                    <input
-                      value={state.sub_district}
-                      onChange={inputHandle}
-                      className="px-4 py-2 focus:border-indigo-500 outline-none bg-[#eeefee] border border-slate-700 rounded-md text-[#6f6f70] "
-                      type="text"
-                      name="subdis"
-                      id="subdis"
-                      placeholder="Sub District Name"
-                    />
-                  </div>
-
                   <button
                     disabled={loader ? true : false}
                     className="bg-red-500 w-full hover:shadow-red-300/50  text-white rounded-md px-7 py-2 mb-3 cursor-pointer"
@@ -234,22 +254,17 @@ function Profile() {
 
                   <div className="flex gap-2 text-[#6f6f70]  ">
                     <span>Shop Name : </span>
-                    <span>{ userInfo.shopInfo?.shopName } </span>
+                    <span>{userInfo.shopInfo?.shopName} </span>
                   </div>
 
                   <div className="flex gap-2 text-[#6f6f70]  ">
                     <span>Division : </span>
-                    <span>{ userInfo.shopInfo?.division } </span>
+                    <span>{userInfo.shopInfo?.division} </span>
                   </div>
                   <div className="flex gap-2 text-[#6f6f70]  ">
                     <span>District : </span>
-                    <span> { userInfo.shopInfo?.district }  </span>
+                    <span> {userInfo.shopInfo?.district} </span>
                   </div>
-                  <div className="flex gap-2 text-[#6f6f70]  ">
-                    <span>Sub District : </span>
-                    <span> { userInfo.shopInfo?.sub_district }  </span>
-                  </div>
-               
                 </div>
               )}
             </div>
@@ -263,7 +278,7 @@ function Profile() {
                 Change Password
               </h1>
 
-              <form>
+              <form onSubmit={submitPasswordChange}>
                 <div className="flex flex-col w-full gap-1 mb-2">
                   <label htmlFor="Shop">Email</label>
                   <input
@@ -271,6 +286,8 @@ function Profile() {
                     type="email"
                     name="email"
                     id="email"
+                    value={passwordData.email}
+                    onChange={handlePasswordChange}
                     placeholder="email"
                   />
                 </div>
@@ -282,6 +299,8 @@ function Profile() {
                     type="password"
                     name="oldPassword"
                     id="oldPassword"
+                    value={passwordData.oldPassword}
+                    onChange={handlePasswordChange}
                     placeholder="Old Password"
                   />
                 </div>
@@ -293,12 +312,21 @@ function Profile() {
                     type="password"
                     name="newPassword"
                     id="newPassword"
+                    value={passwordData.newPassword}
+                    onChange={handlePasswordChange}
                     placeholder="New Password"
                   />
                 </div>
 
-                <button className="bg-red-500 w-full hover:shadow-red-500/40 hover:shadow-md text-white rounded-md px-7 py-2 ">
-                  Save Changes
+                <button
+                  disabled={loader}
+                  className="bg-red-500 w-full text-white rounded-md px-7 py-2"
+                >
+                  {loader ? (
+                    <PropagateLoader color="#fff" cssOverride={overrideStyle} />
+                  ) : (
+                    "Save Changes"
+                  )}
                 </button>
               </form>
             </div>

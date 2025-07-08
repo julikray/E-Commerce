@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../api/api";
 import { jwtDecode } from "jwt-decode";
 
-
 export const customerRegister = createAsyncThunk(
   "auth/customerRegister",
   async (info, { rejectWithValue, fulfillWithValue }) => {
@@ -35,22 +34,34 @@ export const customerLogin = createAsyncThunk(
   }
 );
 
+export const customerChangePassword = createAsyncThunk(
+  "auth/customerChangePassword",
+  async (info, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.post("/customer/change-password", info, {
+        withCredentials: true,
+      });
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const decodeToken = (token) => {
   if (token) {
-     const userInfo = jwtDecode(token)
-     return userInfo
+    const userInfo = jwtDecode(token);
+    return userInfo;
   } else {
     return "";
   }
 };
 
- 
-
 export const authReducer = createSlice({
   name: "auth",
   initialState: {
     loader: "",
-    userInfo: decodeToken(localStorage.getItem('customerToken')),
+    userInfo: decodeToken(localStorage.getItem("customerToken")),
     errorMessage: "",
     successMessage: "",
   },
@@ -60,8 +71,7 @@ export const authReducer = createSlice({
       state.errorMessage = "";
       state.successMessage = "";
     },
-     user_reset: (state, _) => {
-      
+    user_reset: (state, _) => {
       state.userInfo = "";
     },
   },
@@ -77,7 +87,7 @@ export const authReducer = createSlice({
       })
 
       .addCase(customerRegister.fulfilled, (state, { payload }) => {
-        const userInfo = decodeToken(payload.token)
+        const userInfo = decodeToken(payload.token);
         state.successMessage = payload.message;
         state.loader = false;
         state.userInfo = userInfo;
@@ -93,13 +103,25 @@ export const authReducer = createSlice({
       })
 
       .addCase(customerLogin.fulfilled, (state, { payload }) => {
-       const userInfo = decodeToken(payload.token)
-       state.successMessage = payload.message;
+        const userInfo = decodeToken(payload.token);
+        state.successMessage = payload.message;
         state.loader = false;
-        state.userInfo = userInfo
+        state.userInfo = userInfo;
+      })
+
+      .addCase(customerChangePassword.pending, (state) => {
+        state.loader = true;
+      })
+      .addCase(customerChangePassword.fulfilled, (state, { payload }) => {
+        state.loader = false;
+        state.successMessage = payload.message;
+      })
+      .addCase(customerChangePassword.rejected, (state, { payload }) => {
+        state.loader = false;
+        state.errorMessage = payload.error;
       });
   },
 });
 
-export const { messageClear ,user_reset } = authReducer.actions;
+export const { messageClear, user_reset } = authReducer.actions;
 export default authReducer.reducer;

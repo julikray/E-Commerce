@@ -25,8 +25,11 @@ function Stripe({ price, orderId }) {
         { withCredentials: true }
       );
 
+         console.log("Client Secret:", data.clientSecret);
+
       setClientSecret(data.clientSecret);
     } catch (error) {
+       console.log(error.response?.data || error.message);
       console.log(error.response.data);
     }
   };

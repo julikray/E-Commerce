@@ -92,6 +92,46 @@ class customerAuthController {
       return res.status(500).send("Internal Server Error");
     }
   }
+
+
+async customerChangePassword(req, res) {
+  try {
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ error: "All fields are required." });
+    }
+
+    const customer = await customerModel.findById(req.id).select("+password");
+    
+    if (!customer) {
+      return res.status(404).json({ error: "Customer not found." });
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, customer.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: "Old password is incorrect." });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    customer.password = hashedPassword;
+    await customer.save();
+
+    return res.status(200).json({ message: "Password updated successfully." });
+  } catch (err) {
+    console.error("Change password error:", err);
+    return res
+      .status(500)
+      .json({ error: "Server error. Please try again later." });
+  }
+}
+
+
+
+  
+
+
+
 }
 
 export default new customerAuthController();

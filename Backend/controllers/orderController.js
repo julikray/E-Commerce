@@ -2,8 +2,11 @@ import moment from "moment";
 import customerOrder from "../models/customerOrder.js";
 import authOrder from "../models/authOrder.js";
 import cardModel from "../models/cardModel.js";
+import myShopWallet from "../models/myShopWallet.js";
+import sellerWallet from "../models/sellerWallet.js";
 import mongoose from "mongoose";
 import Stripe from "stripe";
+import MyShopWallet from "../models/myShopWallet.js";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 class orderController {
@@ -332,12 +335,54 @@ class orderController {
       },
     });
 
+     console.log("Stripe PaymentIntent:", payment.id, payment.client_secret); 
+
     return res.status(200).json({ clientSecret: payment.client_secret  });
 
   } catch (error) {
     console.error("Stripe error:", error);
     res.status(500).json({ error: "Payment failed" });
   }
+}
+
+orderConfirm = async (req , res) => {
+
+  const {orderId} = req.params
+   try {
+    await customerOrder.findByIdAndUpdate(orderId , {paymentStatus: 'paid' , deliveryStatus: 'pending' } )
+    await authOrder.updateMany({ orderId: new mongoose.Types.ObjectId(orderId)} , { paymentStatus: 'paid' , deliveryStatus: 'pending' }  )
+    
+    const cuOrder = await customerOrder.findById(orderId)
+
+    const auOrder = await authOrder.find({
+      orderId: new mongoose.Types.ObjectId(orderId)
+    })
+
+    const time = moment(Date.now()).format('l')
+
+    const splitTime = time.split('/')
+
+    await MyShopWallet.create({
+      amount: cuOrder.price,
+      month: splitTime[0],
+      year: splitTime[2],
+
+    })
+
+    for(let i = 0; i< auOrder.length; i++){
+      await sellerWallet.create({
+        sellerId: auOrder[i].sellerId.toString(),
+        amount: auOrder[i].price,
+        month: splitTime[0],
+        year: splitTime[2],
+      })
+    }
+    return res.status(200).json({ message: 'success' });
+
+   } catch (error) {
+    return res.status(500).json({ error: error.message }); 
+   }
+
 }
 
 

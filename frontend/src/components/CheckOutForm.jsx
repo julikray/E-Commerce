@@ -71,7 +71,7 @@ import {
 } from '@stripe/react-stripe-js';
 import React, { useState } from 'react';
 
-function CheckOutForm({ orderId ,clientSecret  }) {
+function CheckOutForm({ orderId   }) {
   localStorage.setItem('orderId', orderId);
 
   const stripe = useStripe();
@@ -127,7 +127,7 @@ const submit = async (e) => {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${import.meta.env.VITE_API_BASE_URL}/order/confirm`,
+        return_url: `${import.meta.env.VITE_FRONTEND_URL}/order/confirm`,
       },
     });
 

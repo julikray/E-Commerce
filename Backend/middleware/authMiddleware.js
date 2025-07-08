@@ -9,8 +9,10 @@ const authMiddleware =  async(req , res, next) => {
     } else{
         try{
             const deCodeToken = await jwt.verify(accessToken , process.env.JWT_KEY)
-            req.role = deCodeToken.role
-            req.id = deCodeToken.id
+            req.role = deCodeToken.role;
+            req.id = deCodeToken.id;
+    
+          
             next()
 
         }

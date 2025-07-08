@@ -245,7 +245,7 @@ function Card() {
             </div>
           ) : (
             <div>
-              <Link className="px-4 py-1 bg-[#836bca] text-white rounded-md " to="/shops">
+              <Link className="px-4 py-1 bg-[#836bca] text-white " to="/shops">
                 Shop Now
               </Link>
             </div>

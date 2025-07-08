@@ -226,6 +226,42 @@ class AuthController {
       return res.status(500).send("Internal Server Error");
     }
   }
+
+
+ 
+   async sellerChangePassword(req, res) {
+    try {
+    const { email, oldPassword, newPassword } = req.body;
+
+    if (!email || !oldPassword || !newPassword) {
+      return res.status(400).json({ error: "All fields are required." });
+    }
+
+    // Find seller and include password in query
+    const seller = await sellerModel.findOne({ email }).select("+password");
+    if (!seller) {
+      return res.status(404).json({ error: "Seller not found." });
+    }
+
+    // Check if old password matches
+    const isMatch = await bcrypt.compare(oldPassword, seller.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: "Old password is incorrect." });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    seller.password = hashedPassword;
+
+    await seller.save();
+
+    return res.status(200).json({ message: "Password updated successfully." });
+  } catch (err) {
+    console.error("Change password error:", err);
+    return res.status(500).json({ error: "Server error. Please try again later." });
+  }
+
+  }
 }
 
 export default new AuthController();

@@ -105,7 +105,6 @@ export const profileInfoAdd = createAsyncThunk(
   }
 );
 
-
 export const logout = createAsyncThunk(
   "auth/logout",
   async ({ navigate, role }, { rejectWithValue, fulfillWithValue }) => {
@@ -130,6 +129,19 @@ export const logout = createAsyncThunk(
   }
 );
 
+export const sellerChangePassword = createAsyncThunk(
+  "auth/sellerChangePassword",
+  async (info, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.post("/change-password", info, {
+        withCredentials: true,
+      });
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 const returnRole = (token) => {
   if (token) {
@@ -237,11 +249,17 @@ export const authReducer = createSlice({
         state.successMessage = payload.message;
       })
 
-
-      
-    
-
-     
+      .addCase(sellerChangePassword.pending, (state) => {
+        state.loader = true;
+      })
+      .addCase(sellerChangePassword.fulfilled, (state, { payload }) => {
+        state.loader = false;
+        state.successMessage = payload.message;
+      })
+      .addCase(sellerChangePassword.rejected, (state, { payload }) => {
+        state.loader = false;
+        state.errorMessage = payload.error;
+      });
   },
 });
 export const { messageClear } = authReducer.actions;

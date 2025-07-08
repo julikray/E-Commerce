@@ -12,6 +12,8 @@ orderRoutes.get('/customer/getOrder/:customerId/:status' , orderController.getOr
 orderRoutes.get('/customer/getOrder/:customerId/:status' , orderController.getOrder )
 orderRoutes.get('/customer/getOrders/:orderId' , orderController.getOrders )
 orderRoutes.post('/createPayment' , orderController.createPayment )
+orderRoutes.get('/confirm/:orderId' , orderController.orderConfirm )
+
 
 //admin routes 
 orderRoutes.get('/admin/getAdminOrders' , orderController.getAdminOrders )

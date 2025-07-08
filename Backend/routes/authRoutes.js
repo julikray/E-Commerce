@@ -18,4 +18,6 @@ authRoutes.post("/profile-Info-Add", authMiddleware, authController.profileInfoA
 
 authRoutes.get("/logout", authController.logout);
 
+authRoutes.post("/change-password" , authController.sellerChangePassword )
+
 export default authRoutes;
