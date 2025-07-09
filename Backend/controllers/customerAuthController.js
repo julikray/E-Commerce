@@ -101,9 +101,12 @@ async customerChangePassword(req, res) {
     if (!oldPassword || !newPassword) {
       return res.status(400).json({ error: "All fields are required." });
     }
+    console.log(req.id)
+
 
     const customer = await customerModel.findById(req.id).select("+password");
     
+    console.log(customer)
     if (!customer) {
       return res.status(404).json({ error: "Customer not found." });
     }
