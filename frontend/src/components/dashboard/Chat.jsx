@@ -17,6 +17,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { useRef } from "react";
 import { FaList } from "react-icons/fa";
+import EmojiPicker from "emoji-picker-react";
 
 export const socket = io(import.meta.env.VITE_BACKEND_URL, {
   withCredentials: true,
@@ -30,6 +31,7 @@ function Chat() {
   const [text, setText] = useState("");
   const [receverMessage, setReceverMessage] = useState("");
   const [activeSeller, setActiveSeller] = useState([]);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -105,12 +107,22 @@ function Chat() {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [fd_messages]);
 
-  const [ show , setShow] = useState(false)
+  const [show, setShow] = useState(false);
+
+ const handleEmojiClick = (emojiData) => {
+  setText((prevText) => prevText + emojiData.emoji);
+  setShowEmojiPicker(false);  
+};
+
 
   return (
     <div className="bg-white p-3 rounded-md ">
       <div className="w-full flex relative ">
-        <div className={`w-[230px] md:absolute bg-white transition-all md:h-full ${show ? 'left-0' : '-left-[350px]'} ` }>
+        <div
+          className={`w-[230px] md:absolute bg-white transition-all md:h-full ${
+            show ? "left-0" : "-left-[350px]"
+          } `}
+        >
           <div className="flex justify-center gap-3 items-center text-slate-600 text-xl h-[50px] ">
             <span>
               <RiMessage2Fill />
@@ -145,25 +157,27 @@ function Chat() {
           {currentFd ? (
             <div className="w-full h-full ">
               <div className="flex justify-between items-center text-slate-600 text-xl h-[50px] ">
-                <div className="flex gap-2 " >
-                <div className="w-[30px] h-[30px] rounded-md relative ">
-                  <img
-                    className="w-[30px]  h-[30px] border-[#836bca] border-2 max-w-[38px] p-[2px] rounded-full "
-                    src={currentFd.image || profileimg}
-                    alt="image"
-                  />
-                  {activeSeller.some((c) => c.sellerId === currentFd.fdId) && (
-                    <div className="w-[10px] h-[10px] rounded-full bg-green-600 absolute right-0 bottom-0 "></div>
-                  )}
+                <div className="flex gap-2 ">
+                  <div className="w-[30px] h-[30px] rounded-md relative ">
+                    <img
+                      className="w-[30px]  h-[30px] border-[#836bca] border-2 max-w-[38px] p-[2px] rounded-full "
+                      src={currentFd.image || profileimg}
+                      alt="image"
+                    />
+                    {activeSeller.some(
+                      (c) => c.sellerId === currentFd.fdId
+                    ) && (
+                      <div className="w-[10px] h-[10px] rounded-full bg-green-600 absolute right-0 bottom-0 "></div>
+                    )}
+                  </div>
+                  <span>{currentFd.name || "Unknow"}</span>
                 </div>
-                <span>{currentFd.name || "Unknow"}</span>
-
+                <div
+                  onClick={() => setShow(!show)}
+                  className="w-[35px] hidden md:flex cursor-pointer h-[35px] rounded-md justify-center items-center bg-purple-500 text-white "
+                >
+                  <FaList />
                 </div>
-                <div onClick={()=> setShow(!show)} className="w-[35px] hidden md:flex cursor-pointer h-[35px] rounded-md justify-center items-center bg-purple-500 text-white " >
-                  <FaList/>
-                </div>
-
-
               </div>
 
               <div className="h-[400px] w-full bg-slate-100 p-3 rounded-md ">
@@ -229,10 +243,15 @@ function Chat() {
                     placeholder="input message"
                     className="w-full rounded-md h-full outline-none p-3 "
                   />
-                  <div className="text-2xl right-2 top-2 absolute cursor-auto ">
-                    <span>
+                  <div className="text-2xl right-2 top-2 absolute cursor-pointer">
+                    <span onClick={() => setShowEmojiPicker((prev) => !prev)}>
                       <GrEmoji />
                     </span>
+                    {showEmojiPicker && (
+                      <div className="absolute bottom-10 right-0 z-50">
+                        <EmojiPicker onEmojiClick={handleEmojiClick} />
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="w-[40px] p-2 justify-center items-center rounded-full ">
@@ -243,7 +262,10 @@ function Chat() {
               </div>
             </div>
           ) : (
-            <div onClick={()=> setShow(true)} className="w-full h-[400px] flex justify-center items-center text-lg text-slate-600 ">
+            <div
+              onClick={() => setShow(true)}
+              className="w-full h-[400px] flex justify-center items-center text-lg text-slate-600 "
+            >
               <span>Select selller </span>
             </div>
           )}

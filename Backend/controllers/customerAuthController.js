@@ -27,6 +27,7 @@ class customerAuthController {
           name: createCustomer.name,
           email: createCustomer.email,
           method: createCustomer.method,
+          role: "customer", 
         });
         res.cookie("accessToken", token, {
           expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
@@ -61,6 +62,7 @@ class customerAuthController {
             name: customer.name,
             email: customer.email,
             method: customer.method,
+            role: "customer", 
           });
 
           res.cookie("accessToken", token, {

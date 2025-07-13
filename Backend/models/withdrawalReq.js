@@ -4,7 +4,7 @@ import mongoose, { Schema } from "mongoose";
 const withdrawalSchema = new mongoose.Schema({
 
     sellerId: {
-        type: Schema.ObjectId,
+        type: String,
         required: true
     },
     amount: {
