@@ -7,6 +7,7 @@ import  orderReducer from './Reducers/orderReducer.js';
 import chatReducer from './Reducers/chatReducer.js';
 import bannerReducer from './Reducers/bannerReducer.js';
 import  paymentReducer  from './Reducers/paymentReducer.js';
+import dashboardIndexReducer  from './Reducers/dashboardIndexReducer.js';
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -16,7 +17,9 @@ const rootReducer = combineReducers({
     order: orderReducer,
     chat : chatReducer,
     banner : bannerReducer,
-    payment : paymentReducer
+    payment : paymentReducer,
+    dashboardIndex : dashboardIndexReducer
+
 });
 
 export default rootReducer;

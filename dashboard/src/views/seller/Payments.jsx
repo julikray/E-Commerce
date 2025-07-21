@@ -9,6 +9,7 @@ import {
 } from "../../store/Reducers/paymentReducer";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import moment from 'moment';
 
 function handleOnWheel({ deltaY }) {
   console.log("handleOmWheel", deltaY);
@@ -26,7 +27,7 @@ function Payments() {
     successMessage,
     errorMessage,
     loader,
-    pendingWithDrawal,
+    pendingWithdrawal,
     successWithDrawal,
     totalAmount,
     withDrawalAmount,
@@ -34,14 +35,23 @@ function Payments() {
     availableAmount,
   } = useSelector((state) => state.payment);
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   dispatch(getSellerPaymentDetails(userInfo._id));
+  // }, []);
+
+useEffect(() => {
+  if (userInfo && userInfo._id) {
+     console.log("Dispatching getSellerPaymentDetails");
     dispatch(getSellerPaymentDetails(userInfo._id));
-  }, []);
+  }
+}, [dispatch, userInfo?._id]);
+
+
 
   const sendRequest = (e) => {
     e.preventDefault();
-
     dispatch(sendWithdrawalRequest({ amount, sellerId: userInfo._id }));
+    
   };
 
   useEffect(() => {
@@ -56,22 +66,63 @@ function Payments() {
     }
   }, [successMessage, errorMessage]);
 
-  const Row = ({ index, style }) => {
-    return (
-      <div style={style} className="flex text-sm text-[#6f6f70]">
-        <div className="w-[25%] p-2 whitespace-nowrap ">{index + 1} </div>
-        <div className="w-[25%] p-2 whitespace-nowrap ">Rs  {pendingWithDrawal[index]?.amount}</div>
-        <div className="w-[25%] p-2 whitespace-nowrap ">
-          <span className="px-2 py-1 text-xs  text-red-500 font-bold bg-red-100 rounded-md ">
-            Pending
-          </span>
-        </div>
-        <div className="w-[25%] p-2 whitespace-nowrap ">25 Dec 2025 </div>
+  // const Row = ({ index, style }) => {
+  //   return (
+  //     <div style={style} className="flex text-sm text-[#6f6f70]">
+  //       <div className="w-[25%] p-2 whitespace-nowrap ">{index + 1} </div>
+  //       <div className="w-[25%] p-2 whitespace-nowrap ">Rs  {pendingWithDrawal[index]?.amount}</div>
+  //       <div className="w-[25%] p-2 whitespace-nowrap ">
+  //         <span className="px-2 py-1 text-xs  text-red-500 font-bold bg-red-100 rounded-md ">
+  //           Pending
+  //         </span>
+  //       </div>
+  //       <div className="w-[25%] p-2 whitespace-nowrap ">25 Dec 2025 </div>
+  //     </div>
+  //   );
+  // };
+
+
+  const Row = ({ index, style, data }) => {
+  const item = pendingWithdrawal?.[index];
+  return (
+    <div style={style} className="flex text-sm text-[#6f6f70]">
+      <div className="w-[25%] p-2 whitespace-nowrap ">{index + 1}</div>
+      <div className="w-[25%] p-2 whitespace-nowrap ">Rs {item?.amount}</div>
+      <div className="w-[25%] p-2 whitespace-nowrap ">
+        <span className={`px-2 py-1 text-xs font-bold rounded-md ${
+          item?.status === 'success'
+            ? 'text-green-500 bg-green-100'
+            : 'text-red-500 bg-red-100'
+        }`}>
+          {item?.status}
+        </span>
       </div>
-    );
-  };
+      <div className="w-[25%] p-2 whitespace-nowrap ">  {item?.createdAt ? moment(item.createdAt).format("LL") : "--"} </div>
+    </div>
+  );
+};
 
  
+  const Rows = ({ index, style, data }) => {
+  const item = successWithDrawal?.[index];
+  return (
+    <div style={style} className="flex text-sm text-[#6f6f70]">
+      <div className="w-[25%] p-2 whitespace-nowrap ">{index + 1}</div>
+      <div className="w-[25%] p-2 whitespace-nowrap ">Rs {item?.amount}</div>
+      <div className="w-[25%] p-2 whitespace-nowrap ">
+        <span className={`px-2 py-1 text-xs font-bold rounded-md ${
+          item?.status === 'success'
+            ? 'text-green-500 bg-green-100'
+            : 'text-red-500 bg-red-100'
+        }`}>
+          {item?.status}
+        </span>
+      </div>
+      <div className="w-[25%] p-2 whitespace-nowrap ">  {item?.createdAt ? moment(item.createdAt).format("LL") : "--"} </div>
+    </div>
+  );
+};
+
 
 
 
@@ -166,11 +217,7 @@ function Payments() {
                   className="List"
                   height={350}
                   //  itemCount={pendingWithDrawal.length}
-                  itemCount={
-                    Array.isArray(pendingWithDrawal)
-                      ? pendingWithDrawal.length
-                      : ""
-                  }
+                  itemCount={Array.isArray(pendingWithdrawal) ? pendingWithdrawal.length : 0}
                   itemSize={35}
                   outerElementType={outerElementType}
                 >
@@ -198,11 +245,12 @@ function Payments() {
                   style={{ minWidth: "340px" }}
                   className="List"
                   height={350}
-                  itemCount={100}
+                  // itemCount={100}
+                   itemCount={Array.isArray(successWithDrawal) ? successWithDrawal.length : 0}
                   itemSize={35}
                   outerElementType={outerElementType}
                 >
-                  {Row}
+                  {Rows}
                 </List>
               }
             </div>

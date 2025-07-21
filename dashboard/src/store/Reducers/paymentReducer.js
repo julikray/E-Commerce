@@ -38,13 +38,52 @@ export const sendWithdrawalRequest = createAsyncThunk(
   }
 );
 
+
+export const getPaymentRequest = createAsyncThunk(
+  "payment/getPaymentRequest",
+  async (_, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.get(`/payment/getPaymentRequest`, {
+        withCredentials: true,
+      });
+
+      console.log(data);
+      return fulfillWithValue(data);
+    } catch (error) {
+      console.log(error.response.data)
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
+export const confirmPaymentRequest = createAsyncThunk(
+  "payment/confirmPaymentRequest",
+  async (paymentId, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.post(`/payment/confirmPaymentRequest`,{paymentId} , {
+        withCredentials: true,
+      });
+
+      console.log(data);
+      return fulfillWithValue(data);
+    } catch (error) {
+      console.log(error.response.data)
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
+
+
 export const paymentReducer = createSlice({
   name: "payment",
   initialState: {
     successMessage: "",
     errorMessage: "",
     loader: false,
-    pendingWithDrawal: [],
+    pendingWithdrawal: [],
     successWithDrawal: [],
     totalAmount: 0,
     withDrawalAmount: 0,
@@ -61,7 +100,7 @@ export const paymentReducer = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getSellerPaymentDetails.fulfilled, (state, { payload }) => {
-        state.pendingWithDrawal = payload.pendingWithDrawal;
+        state.pendingWithdrawal = payload.pendingWithdrawal;
         state.successWithDrawal = payload.successWithDrawal;
         state.totalAmount = payload.totalAmount;
         state.availableAmount = payload.availableAmount;
@@ -82,17 +121,33 @@ export const paymentReducer = createSlice({
         state.loader = false;
         state.successMessage = payload.message;
         // state.pendingWithDrawal = [...state.pendingWithDrawal , payload.withdrawal]
-        state.pendingWithDrawal = [
-          ...(Array.isArray(state.pendingWithDrawal)
-            ? state.pendingWithDrawal
-            : []),
-          payload.withdrawal,
-        ];
+        state.pendingWithdrawal = [...(Array.isArray(state.pendingWithdrawal)  ? state.pendingWithdrawal : []),payload.withdrawal, ];
 
-        state.availableAmount =
-          state.availableAmount - payload.withdrawal.amount;
+        state.availableAmount = state.availableAmount - payload.withdrawal.amount;
         state.pendingAmount = payload.withdrawal.amount;
-      });
+      })
+
+      .addCase(getPaymentRequest.fulfilled, (state, { payload }) => {
+        state.pendingWithdrawal = payload.withdrawalRequest;
+      })
+
+       .addCase(confirmPaymentRequest.pending, (state, { payload }) => {
+        state.loader = true;
+      })
+
+      .addCase(confirmPaymentRequest.rejected, (state, { payload }) => {
+        state.loader = false;
+        state.errorMessage = payload.message;
+      })
+
+      .addCase(confirmPaymentRequest.fulfilled, (state, { payload }) => {
+        const temp = state.pendingWithdrawal.filter(r => r._id !== payload.payment._id )
+        state.loader = false;
+        state.successMessage = payload.message;
+        state.pendingWithdrawal = temp
+       
+      })
+
   },
 });
 

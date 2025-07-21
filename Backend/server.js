@@ -16,6 +16,7 @@ import http from "http";
 import chatRoutes from "./routes/chatRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import bannerRoutes from "./routes/bannerRoutes.js";
+import dashboardIndexRoutes from "./routes/dashboardIndexRoutes.js";
 
 // app config
 const app = express();
@@ -192,7 +193,8 @@ app.use("/api/home/product", cardRoutes);
 app.use("/api/home/order", orderRoutes);
 app.use("/api", chatRoutes);
 app.use("/api", paymentRoutes);
-app.use("/api" , bannerRoutes)
+app.use("/api" , bannerRoutes);
+app.use("/api" , dashboardIndexRoutes)
 
 app.get("/", (req, res) => {
   res.send("API working");

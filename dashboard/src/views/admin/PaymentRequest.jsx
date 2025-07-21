@@ -1,5 +1,17 @@
 import React, { forwardRef } from "react";
 import { FixedSizeList as List } from 'react-window';
+import { useDispatch, useSelector } from "react-redux";
+import {
+    confirmPaymentRequest,
+    getPaymentRequest,
+  getSellerPaymentDetails,
+  messageClear,
+  sendWithdrawalRequest,
+} from "../../store/Reducers/paymentReducer";
+import { useEffect } from "react";
+import moment from "moment";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 function handleOnWheel({deltaY}) {
     console.log('handleOmWheel' , deltaY)
@@ -11,31 +23,56 @@ const outerElementType = forwardRef((props , ref) => (
 
 function PaymentRequest() {
 
-    const array = [1,2,3,4,5,6,7,8]
+     const dispatch = useDispatch();
+      const {successMessage,errorMessage, loader,pendingWithdrawal } = useSelector((state) => state.payment);
+
+    
+
 
     const Row = ({index , style}) => {
         return (
             <div style={style} className="flex text-sm text-[#6f6f70]" >
                 <div className="w-[25%] p-2 whitespace-nowrap " >{index + 1} </div>
-                <div className="w-[25%] p-2 whitespace-nowrap " >Rs 2222</div>
+                <div className="w-[25%] p-2 whitespace-nowrap " >Rs {pendingWithdrawal[index]?.amount} </div>
                 <div className="w-[25%] p-2 whitespace-nowrap " >
-                <span className="px-2 py-1 text-xs text-green-500 font-bold bg-green-100 rounded-md " >Pending</span>
+                <span className="px-2 py-1 text-xs text-green-500 font-bold bg-green-100 rounded-md " >{pendingWithdrawal[index]?.status}</span>
                 </div>
-                <div className="w-[25%] p-2 whitespace-nowrap " >25 Dec 2025 </div>
+                <div className="w-[25%] p-2 whitespace-nowrap " > { moment(pendingWithdrawal[index]?.createdAt).format('LL') }  </div>
                 <div className="w-[25%] p-2 whitespace-nowrap " >
-                    <button className="px-2 py-1 text-xs text-blue-500 font-bold bg-blue-100 rounded-md" >
-                    Confirm
+                    <button disabled={loader} onClick={()=> confirmRequest(pendingWithdrawal[index]?._id)} className="px-2 py-1 text-xs text-blue-500 font-bold bg-blue-100 rounded-md" >
+                        {(loader && paymentId === pendingWithdrawal[index]?._id) ? "loading...." : "Confirm" }
+                    
                         
                     </button>
                 </div>
 
-
-
-
-
             </div>
         )
     }
+
+    useEffect(() => {
+        dispatch(getPaymentRequest())
+    },[])
+    const [paymentId , setPaymentId] = useState('')
+
+    const confirmRequest = (id) =>{
+        setPaymentId(id)
+        // dispatch(confirmPaymentRequest(id))
+        dispatch(confirmPaymentRequest( id ))
+    }
+
+
+      useEffect(() => {
+        if (successMessage) {
+          toast.success(successMessage);
+          dispatch(messageClear());
+        }
+    
+        if (errorMessage) {
+          toast.error(errorMessage);
+          dispatch(messageClear());
+        }
+      }, [successMessage, errorMessage]);
 
   return (
     <div className="px-2 lg:px-7 pt-5 ">
@@ -57,7 +94,7 @@ function PaymentRequest() {
                      <List style={{minWidth : '340px'}}
                      className="List"
                      height={350}
-                     itemCount={10}
+                     itemCount={pendingWithdrawal.length}
                      itemSize={35}
                      outerElementType={outerElementType}
                      

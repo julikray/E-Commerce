@@ -14,9 +14,15 @@ paymentRoutes.put('/payment/activeStripeConnectAccount/:activeCode' , authMiddle
 
 paymentRoutes.get('/payment/sellerPaymentDetails/:sellerId' , authMiddleware , paymentController.getSellerPaymentDetails)
 
+
+
+
 paymentRoutes.post('/payment/withdrawalRequest' , authMiddleware , paymentController.sendWithdrawalRequest)
 
+
+paymentRoutes.get('/payment/getPaymentRequest' , authMiddleware , paymentController.getPaymentRequeest)
  
+paymentRoutes.post('/payment/confirmPaymentRequest' , authMiddleware , paymentController.confirmPaymentRequest)
 
 
 export default paymentRoutes;
