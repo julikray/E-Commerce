@@ -6,15 +6,16 @@ import Pagination from "../Pagination";
 import { FaEdit, FaImage, FaEye  } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
-import { getProduct, messageClear } from "../../store/Reducers/productReducer.js";
+import { deleteProduct, getProduct, messageClear } from "../../store/Reducers/productReducer.js";
 import { GiKnightBanner } from "react-icons/gi";
+import toast from "react-hot-toast";
 
 function Product() {
 
 
   const dispatch = useDispatch();
 
-  const { products , totalProduct} = useSelector(
+  const { products , totalProduct , successMessage , errorMessage} = useSelector(
     (state) => state.product
   );
 
@@ -41,6 +42,9 @@ function Product() {
   //     }
   //   },[errorMessage , successMessage])
 
+  const handleDelete = (id) => {
+  dispatch(deleteProduct(id));
+};
 
     useEffect(() => {
       const obj = {
@@ -50,6 +54,19 @@ function Product() {
       }
       dispatch(getProduct(obj) )
     },[searchValue , currentPage , parPage])
+
+
+    useEffect(() => {
+  if (successMessage) {
+    toast.success(successMessage);
+    dispatch(messageClear());
+  }
+  if (errorMessage) {
+    toast.error(errorMessage);
+    dispatch(messageClear());
+  }
+}, [successMessage, errorMessage]);
+
     
 
   return (
@@ -167,7 +184,9 @@ function Product() {
                       <Link to={`/seller/dashboard/addProduct`} className="p-[6px]  bg-green-500  rounded hover:shadow-lg hover text-[#6f6f70] ">
                         <FaEye />
                       </Link>
-                      <Link className="p-[6px]  bg-red-500  rounded hover:shadow-lg hover text-[#6f6f70] ">
+                      <Link 
+                        onClick={() => handleDelete(d._id)}
+                      className="p-[6px]  bg-red-500  rounded hover:shadow-lg hover text-[#6f6f70] ">
                          
                         <RiDeleteBin6Line />
                       </Link>

@@ -14,6 +14,7 @@ function ChangePassword() {
   );
 
   const [passwordData, setPasswordData] = useState({
+    email: "",
     oldPassword: "",
     newPassword: "",
   });
@@ -53,6 +54,19 @@ function ChangePassword() {
     <div className="p-4 bg-white rounded-md">
       <h2 className="text-xl text-slate-600 pb-5">Change Password</h2>
       <form onSubmit={submitPasswordChange}>
+        <div className="flex flex-col gap-1 mb-2">
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Your Email"
+            value={passwordData.email}
+            onChange={handlePasswordChange}
+            className="outline-none px-3 py-1 border rounded-md text-slate-600"
+          />
+        </div>
+
         <div className="flex flex-col gap-1 mb-2">
           <label htmlFor="oldPassword">Old Password</label>
           <input

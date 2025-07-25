@@ -17,6 +17,8 @@ productRoutes.post('/product-update', authMiddleware ,productController.product_
 
 productRoutes.post('/product-image-update', authMiddleware ,productController.product_image_update );
 
+productRoutes.delete('/delete-product/:productId', authMiddleware, productController.deleteProduct);
+
  
  
 

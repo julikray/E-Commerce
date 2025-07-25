@@ -149,9 +149,9 @@ function Profile() {
 
             <div className="px-0 md:px-5 py-2">
               <div className="flex justify-between text-sm flex-col gap-2 p-4 border border-[#cfcfcf]  rounded-md relative ">
-                <span className="p-[6px] bg-yellow-500 rounded hover:shadow-lg hover:shadow-yellow-500/50 absolute right-2 top-2 cursor-pointer ">
+                {/* <span className="p-[6px] bg-yellow-500 rounded hover:shadow-lg hover:shadow-yellow-500/50 absolute right-2 top-2 cursor-pointer ">
                   <FaEdit />
-                </span>
+                </span> */}
 
                 <div className="flex gap-2 text-[#6f6f70]  ">
                   <span>Name : </span>
@@ -248,9 +248,9 @@ function Profile() {
                 </form>
               ) : (
                 <div className="flex justify-between text-sm flex-col gap-2 p-4 border border-[#cfcfcf]  rounded-md relative ">
-                  <span className="p-[6px] bg-yellow-500 rounded hover:shadow-lg hover:shadow-yellow-500/50 absolute right-2 top-2 cursor-pointer ">
+                  {/* <span className="p-[6px] bg-yellow-500 rounded hover:shadow-lg hover:shadow-yellow-500/50 absolute right-2 top-2 cursor-pointer ">
                     <FaEdit />
-                  </span>
+                  </span> */}
 
                   <div className="flex gap-2 text-[#6f6f70]  ">
                     <span>Shop Name : </span>

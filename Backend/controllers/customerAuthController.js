@@ -98,15 +98,18 @@ class customerAuthController {
 
 async customerChangePassword(req, res) {
   try {
-    const { oldPassword, newPassword } = req.body;
+    const {  email, oldPassword, newPassword } = req.body;
 
-    if (!oldPassword || !newPassword) {
+    if ( ! email || !oldPassword || !newPassword) {
       return res.status(400).json({ error: "All fields are required." });
     }
-    console.log(req.id)
+   
 
 
-    const customer = await customerModel.findById(req.id).select("+password");
+    // const customer = await customerModel.findById(req.id).select("+password");
+
+    const customer = await customerModel.findOne({ email }).select("+password");
+
     
     console.log(customer)
     if (!customer) {

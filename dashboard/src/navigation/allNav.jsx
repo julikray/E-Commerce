@@ -92,13 +92,13 @@ export const allNav = [
         role : 'seller',
         path : '/seller/dashboard/product'
     },
-    {
-        id : 12,
-        title : 'Discount Product',
-        icon : <MdOutlineDiscount />,
-        role : 'seller',
-        path : '/seller/dashboard/discountProduct'
-    },
+    // {
+    //     id : 12,
+    //     title : 'Discount Product',
+    //     icon : <MdOutlineDiscount />,
+    //     role : 'seller',
+    //     path : '/seller/dashboard/discountProduct'
+    // },
     {
         id :13,
         title : 'Orders',

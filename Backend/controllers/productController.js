@@ -1,77 +1,3 @@
-// import formidable from "formidable";
-// import { v2 as cloudinary } from "cloudinary";
-// import productModel from "../models/productModel.js";
-
-// class productController {
-//   //start add product
-//   async add_product(req, res) {
-//     const {id } = req;
-//     const form = formidable({ multiples: true });
-
-//     form.parse(req, async (err, field, files) => {
-//       //   console.log("FIELDS:", field );
-//       //   console.log("FILES:", files);
-
-//       let {
-//         name,
-//         description,
-//         discount,
-//         price,
-//         brand,
-//         stock,
-//         shopName,
-//         category,
-//       } = field;
-//       const { images } = files;
-//       name = name.trim()
-//       const slug = name.split(" ").join("-");
-
-//       cloudinary.config({
-//         cloud_name: process.env.CLOUDINARY_NAME,
-//         api_key: process.env.CLOUDINARY_API_KEY,
-//         api_secret: process.env.CLOUDINARY_API_SECRET,
-//         secure: true,
-//       });
-
-//       try {
-//         let allImageUrl = [];
-//         for (let i = 0; i < images.length; i++) {
-//           const result = await cloudinary.uploader.upload(images[i].filepath, {
-//             folder: "products",
-//           });
-//           allImageUrl = [...allImageUrl, result.url];
-//         }
-
-//         await productModel.create({
-//           sellerId:id,
-//           name,
-//           slug,
-//           description : description.trim(),
-//           discount: parseInt(discount),
-//           price: parseInt(price) ,
-//           brand : brand.trim() ,
-//           stock : parseInt(stock) ,
-//           shopName,
-//           category: category.trim(),
-//           images: allImageUrl
-//         });
-
-//         return res
-//         .status(201)
-//         .json({ message: "Product added successfully" });
-
-//       } catch (error) {
-//         console.error("Upload Error:", error);
-//         return res.status(500).send("Internal Server Error");
-//       }
-//     });
-//   }
-
-//   //end add product
-// }
-
-// export default new productController();
-
 import formidable from "formidable";
 import { v2 as cloudinary } from "cloudinary";
 import productModel from "../models/productModel.js";
@@ -306,63 +232,25 @@ class productController {
   }
 
 
+  async deleteProduct(req, res) {
+  const { productId } = req.params;
 
-  // async product_image_update(req, res) {
-  //   const form = formidable({ multiples: true });
+  try {
   
-  //   form.parse(req, async (err, fields, files) => {
-  //     if (err) {
-  //       return res.status(400).json({ error: err.message });
-  //     }
-  
-  //     const { oldImage, productId } = fields;
-  //     const { newImage } = files;
-  
-  //     try {
-  //       // Cloudinary config
-  //       cloudinary.config({
-  //         cloud_name: process.env.CLOUDINARY_NAME,
-  //         api_key: process.env.CLOUDINARY_API_KEY,
-  //         api_secret: process.env.CLOUDINARY_API_SECRET,
-  //         secure: true,
-  //       });
-  
-  //       const imageFile = Array.isArray(newImage) ? newImage[0] : newImage;
-  
-  //       // Upload new image
-  //       const result = await cloudinary.uploader.upload(imageFile.filepath, {
-  //         folder: "products",
-  //       });
-  
-  //       if (!result || !result.secure_url) {
-  //         return res.status(500).json({ error: "Image upload failed" });
-  //       }
-  
-  //       // Delete old image from Cloudinary
-  //       const oldPublicId = oldImage.split("/").slice(-2).join("/").split(".")[0]; // e.g., products/image123
-  //       await cloudinary.uploader.destroy(oldPublicId);
-  
-  //       // Update DB
-  //       let { images } = await productModel.findById(productId);
-  //       const index = images.findIndex((img) => img === oldImage);
-  //       images[index] = result.secure_url;
-  
-  //       await productModel.findByIdAndUpdate(productId, { images });
-  
-  //       const product = await productModel.findById(productId);
-  //       return res.status(200).json({
-  //         product,
-  //         message: "Product Image Updated Successfully",
-  //       });
-  //     } catch (error) {
-  //       console.error("Image Update Error:", error);
-  //       return res.status(500).json({ error: error.message });
-  //     }
-  //   });
-  // }
-  
+    const product = await productModel.findById(productId);
+    if (!product) return res.status(404).json({ message: "Product not found" });
 
- 
+
+    await productModel.findByIdAndDelete(productId);
+
+    return res.status(200).json({ message: "Product deleted successfully" });
+  } catch (error) {
+    console.error("Delete Product Error:", error);
+    return res.status(500).send("Internal Server Error");
+  }
+}
+
+
   
 
 }
