@@ -7,7 +7,7 @@ import Withdrawal from "../models/withdrawalReq.js";
 import mongoose from "mongoose";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-const baseUrl = process.env.BASE_URL;
+const baseUrl = process.env.DASHBOARD_URL;
 
 function sumAmount(data) {
   let sum = 0;
