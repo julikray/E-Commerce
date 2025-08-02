@@ -18,9 +18,9 @@ createRoot(document.getElementById("root")).render(
         toastOptions={{
           position: "top-right",
           style: {
-            background: "#283046",
-            color: "white"
-          }
+            background: "white",
+            color: "black",
+          },
         }}
       />
     </Provider>
