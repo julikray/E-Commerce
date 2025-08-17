@@ -21,6 +21,9 @@ import ChangePassword from "./components/dashboard/ChangePassword";
 import Order from "./components/dashboard/Order";
 import Chat from "./components/dashboard/Chat";
 import ConfirmOrder from "./pages/ConfirmOrder";
+import About from "./pages/About";
+import Blogs from "./pages/Blogs";
+import Contact from "./pages/Contact";
 
 function App() {
   const dispatch = useDispatch();
@@ -35,6 +38,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
         <Route path="/shops" element={<Shops />} />
+        <Route path="/blog" element={<Blogs/> } />
+        <Route path="/about" element={<About/> } />
+        <Route path="/contact" element={<Contact/> } />
         <Route path="/products?" element={<CategoryShop />} />
         <Route path="/products/search?" element={<SearchProducts />} />
         <Route path="/card" element={<Card />} />
@@ -42,6 +48,7 @@ function App() {
         <Route path="/shipping" element={<Shipping />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/product/details/:slug" element={<Details />} />
+    
 
         <Route path="/dashboard" element={<ProtectUser />}>
           <Route path="" element={<Dashboard />}>

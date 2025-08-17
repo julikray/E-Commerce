@@ -234,27 +234,142 @@ class paymentController {
     }
   }
 
-  async confirmPaymentRequest(req, res) {
-    const { paymentId } = req.body;
-    try {
-      const payment = await Withdrawal.findById(paymentId);
-      const { stripeId } = await stripeModel.findOne({
-        sellerId: new mongoose.Types.ObjectId(payment.sellerId),
-      });
+  // async confirmPaymentRequest(req, res) {
+  //   const { paymentId } = req.body;
+  //   try {
+  //     const payment = await Withdrawal.findById(paymentId);
 
-      await stripe.transfers.create({
-        amount: payment.amount * 100,
-        currency: "inr",
-        destination: stripeId,
-      });
+  //      if (!payment) {
+  //     return res.status(404).json({ message: "Payment not found" });
+  //   }
 
-      await Withdrawal.findByIdAndUpdate(paymentId, { status: "success" });
-      res.status(200).json({ payment, message: "Request Confirm Success" });
-    } catch (error) {
-      console.error(" Error:", error);
-      res.status(500).json({ message: "Internal server error" });
+  //     // const { stripeId } = await stripeModel.findOne({
+  //     //   sellerId: new mongoose.Types.ObjectId(payment.sellerId),
+  //     // });
+
+  //       const stripeData = await stripeModel.findOne({ sellerId: payment.sellerId });
+
+  //   if (!stripeData) {
+  //     return res.status(404).json({ message: "Stripe ID not found for seller" });
+  //   }
+
+
+  //     await stripe.transfers.create({
+  //       amount: payment.amount * 100,
+  //       currency: "inr",
+  //       destination:  stripeData.stripeId,
+  //     });
+
+  //     await Withdrawal.findByIdAndUpdate(paymentId, { status: "success" });
+  //     res.status(200).json({ payment, message: "Request Confirm Success" });
+  //   } catch (error) {
+  //     console.error(" Error:", error);
+  //     res.status(500).json({ message: "Internal server error" });
+  //   }
+  // }
+
+
+// async confirmPaymentRequest(req, res) {
+//   const { paymentId } = req.body;
+
+//   try {
+//     const payment = await Withdrawal.findById(paymentId);
+//     if (!payment) {
+//       return res.status(404).json({ message: "Payment not found" });
+//     }
+
+//     const stripeData = await stripeModel.findOne({ sellerId: payment.sellerId });
+//     if (!stripeData) {
+//       return res.status(404).json({ message: "Stripe ID not found for seller" });
+//     }
+
+//     // 1. Charge the platform account using test card to fund balance
+//     const charge = await stripe.charges.create({
+//       amount: payment.amount * 100,
+//       currency: "inr",
+//       source: "tok_visa", // Simulated card
+//       description: "Simulated platform charge to fund test balance",
+//     });
+
+//     console.log("✅ Test charge created:", charge.id);
+
+//     // 2. Now transfer that balance to the connected account
+//     const transfer = await stripe.transfers.create({
+//       amount: payment.amount * 100,
+//       currency: "usd",
+//       destination: stripeData.stripeId,
+//     });
+
+//     console.log("✅ Transfer created:", transfer.id);
+
+//     await Withdrawal.findByIdAndUpdate(paymentId, { status: "success" });
+
+//     res.status(200).json({ payment, message: "Request Confirm Success" });
+
+//   } catch (error) {
+//     console.error("❌ confirmPaymentRequest Error:", error);
+//     res.status(500).json({ message: error.message || "Internal server error" });
+//   }
+// }
+
+
+
+
+async confirmPaymentRequest(req, res) {
+  const { paymentId } = req.body;
+
+  try {
+    const payment = await Withdrawal.findById(paymentId);
+    if (!payment) {
+      return res.status(404).json({ message: "Payment not found" });
     }
+
+    const stripeData = await stripeModel.findOne({ sellerId: payment.sellerId });
+    if (!stripeData) {
+      return res.status(404).json({ message: "Stripe ID not found for seller" });
+    }
+
+    // Ensure minimum amount (Stripe requires at least $0.50 equivalent)
+    if (payment.amount < 50) {
+      return res.status(400).json({
+        message: "Minimum payout amount is ₹50",
+      });
+    }
+
+    // 1. Add funds to platform test balance using special test card
+    const charge = await stripe.charges.create({
+      amount: payment.amount * 100, // in paise
+      currency: "inr",
+      source: {
+        object: "card",
+        number: "4000000000000077", // Add balance test card
+        exp_month: 12,
+        exp_year: 34,
+        cvc: "123",
+      },
+      description: "Add funds to platform balance (test mode)",
+    });
+
+    console.log("✅ Test charge created:", charge.id);
+
+    // 2. Transfer to the connected account
+    const transfer = await stripe.transfers.create({
+      amount: payment.amount * 100,
+      currency: "inr",
+      destination: stripeData.stripeId,
+    });
+
+    console.log("✅ Transfer created:", transfer.id);
+
+    await Withdrawal.findByIdAndUpdate(paymentId, { status: "success" });
+
+    res.status(200).json({ payment, message: "Request Confirm Success" });
+
+  } catch (error) {
+    console.error("❌ confirmPaymentRequest Error:", error);
+    res.status(500).json({ message: error.message || "Internal server error" });
   }
+}
 
 
 

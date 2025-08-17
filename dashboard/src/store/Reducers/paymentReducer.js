@@ -38,7 +38,6 @@ export const sendWithdrawalRequest = createAsyncThunk(
   }
 );
 
-
 export const getPaymentRequest = createAsyncThunk(
   "payment/getPaymentRequest",
   async (_, { rejectWithValue, fulfillWithValue }) => {
@@ -50,32 +49,32 @@ export const getPaymentRequest = createAsyncThunk(
       console.log(data);
       return fulfillWithValue(data);
     } catch (error) {
-      console.log(error.response.data)
+      console.log(error.response.data);
       return rejectWithValue(error.response.data);
     }
   }
 );
-
 
 export const confirmPaymentRequest = createAsyncThunk(
   "payment/confirmPaymentRequest",
   async (paymentId, { rejectWithValue, fulfillWithValue }) => {
     try {
-      const { data } = await api.post(`/payment/confirmPaymentRequest`,{paymentId} , {
-        withCredentials: true,
-      });
+      const { data } = await api.post(
+        `/payment/confirmPaymentRequest`,
+        { paymentId },
+        {
+          withCredentials: true,
+        }
+      );
 
       console.log(data);
       return fulfillWithValue(data);
     } catch (error) {
-      console.log(error.response.data)
+      console.log(error.response.data);
       return rejectWithValue(error.response.data);
     }
   }
 );
-
-
-
 
 export const paymentReducer = createSlice({
   name: "payment",
@@ -89,6 +88,7 @@ export const paymentReducer = createSlice({
     withDrawalAmount: 0,
     pendingAmount: 0,
     availableAmount: 0,
+    loaderPaymentId: null, // NEW
   },
   reducers: {
     messageClear: (state, _) => {
@@ -121,9 +121,15 @@ export const paymentReducer = createSlice({
         state.loader = false;
         state.successMessage = payload.message;
         // state.pendingWithDrawal = [...state.pendingWithDrawal , payload.withdrawal]
-        state.pendingWithdrawal = [...(Array.isArray(state.pendingWithdrawal)  ? state.pendingWithdrawal : []),payload.withdrawal, ];
+        state.pendingWithdrawal = [
+          ...(Array.isArray(state.pendingWithdrawal)
+            ? state.pendingWithdrawal
+            : []),
+          payload.withdrawal,
+        ];
 
-        state.availableAmount = state.availableAmount - payload.withdrawal.amount;
+        state.availableAmount =
+          state.availableAmount - payload.withdrawal.amount;
         state.pendingAmount = payload.withdrawal.amount;
       })
 
@@ -131,23 +137,32 @@ export const paymentReducer = createSlice({
         state.pendingWithdrawal = payload.withdrawalRequest;
       })
 
-       .addCase(confirmPaymentRequest.pending, (state, { payload }) => {
+      //  .addCase(confirmPaymentRequest.pending, (state, { payload }) => {
+      //   state.loader = true;
+      //   state.loaderPaymentId = meta.arg;
+      // })
+
+      .addCase(confirmPaymentRequest.pending, (state, { meta }) => {
         state.loader = true;
+        state.loaderPaymentId = meta.arg;
       })
 
       .addCase(confirmPaymentRequest.rejected, (state, { payload }) => {
         state.loader = false;
-        state.errorMessage = payload.message;
+        // state.errorMessage = payload.message;
+        state.errorMessage =
+          payload?.message || payload?.error || "Something went wrong";
       })
 
       .addCase(confirmPaymentRequest.fulfilled, (state, { payload }) => {
-        const temp = state.pendingWithdrawal.filter(r => r._id !== payload.payment._id )
+        const temp = state.pendingWithdrawal.filter(
+          (r) => r._id !== payload.payment._id
+        );
         state.loader = false;
+        state.loaderPaymentId = null;
         state.successMessage = payload.message;
-        state.pendingWithdrawal = temp
-       
-      })
-
+        state.pendingWithdrawal = temp;
+      });
   },
 });
 

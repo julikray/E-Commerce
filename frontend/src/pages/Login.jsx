@@ -51,7 +51,7 @@ function Login() {
   return (
     <div>
      
-      <div className="min-w-screen min-h-screen bg-[#00000099] flex justify-center items-center">
+      <div className="min-w-screen min-h-screen bg-[#eeefee] flex justify-center items-center">
         <div className="w-[350px] text-[#6f6f70] p-2">
           <div className="bg-[#fefeff] border border-[#d2d3d2]  p-4 rounded-md shadow-sm ">
             <h2 className="text-xl mb-3 font-bold">Welcome to E-commerce</h2>

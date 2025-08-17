@@ -24,7 +24,7 @@ const outerElementType = forwardRef((props , ref) => (
 function PaymentRequest() {
 
      const dispatch = useDispatch();
-      const {successMessage,errorMessage, loader,pendingWithdrawal } = useSelector((state) => state.payment);
+      const {successMessage,errorMessage, loader, loaderPaymentId , pendingWithdrawal } = useSelector((state) => state.payment);
 
     
 
@@ -40,7 +40,7 @@ function PaymentRequest() {
                 <div className="w-[25%] p-2 whitespace-nowrap " > { moment(pendingWithdrawal[index]?.createdAt).format('LL') }  </div>
                 <div className="w-[25%] p-2 whitespace-nowrap " >
                     <button disabled={loader} onClick={()=> confirmRequest(pendingWithdrawal[index]?._id)} className="px-2 py-1 text-xs text-blue-500 font-bold bg-blue-100 rounded-md" >
-                        {(loader && paymentId === pendingWithdrawal[index]?._id) ? "loading...." : "Confirm" }
+                        {(loaderPaymentId === pendingWithdrawal[index]?._id) ? "loading...." : "Confirm" }
                     
                         
                     </button>
